@@ -1,0 +1,34 @@
+# Entornos virtuales
+venv/
+.env/
+.conda/
+
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos de datos grandes
+data/
+*.csv
+*.xlsx
+*.npy
+*.pkl
+
+# Resultados y artifacts
+artifacts/
+results/
+outputs/
+logs/
+
+# Configuraciones locales
+config_local.py
+.env
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs / editores
+.vscode/
+.idea/
