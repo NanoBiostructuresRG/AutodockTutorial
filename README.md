@@ -45,13 +45,14 @@ This tutorial is meant to be a **learning resource**, not a final reference.
 ---
 
 ## Authors
-Developed by **Ana C. Murrieta** and Flavio F. Contreras-Torres      
-Monterrey, Mexico - February 2026 
+**Ana C. Murrieta** and Flavio F. Contreras-Torres
+Tecnológico de Monterrey      
+Monterrey, Mexico 
 
 ---
 
 ## Versions     
-v.1.0.0 - February 2026. Monterrey, Mexico
+v.1.0.0 - February 2026
 
 ---
 
