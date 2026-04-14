@@ -43,11 +43,17 @@ The goal of this tutorial is not to present completely new material, but to **or
 You are encouraged to complement this tutorial with other resources, such as:
 
 - The official [AutoDock Vina documentation](https://autodock-vina.readthedocs.io/)
-- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/) [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/) 
+- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/). [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/) 
 - Online tutorials [jRicciL](https://jriccil.github.io/Taller_Simulacion_Molecular/docking_con_adt4.html)
 
 Learning works best when you see the same ideas explained in **multiple ways and from multiple sources**.
 
+<br>
+
+> [!NOTE]
+> The instructions adopted in this tutorial are based on a working environment running Ubuntu 22.04.4 LTS.   
+
+<br>
 
 ---
 # PART 1. Introduction to Molecular Docking
@@ -102,12 +108,7 @@ This tutorial focuses on **AutoDock Vina** and related utilities; please ensure 
 - **LigPlot+** - Visualization of protein-ligand interactions
 - **Bash** - Shell scripting for automatization of repetitive tasks 
 
-<br>
 
-> [!NOTE]
-> The instructions are based on a working environment running Ubuntu 22.04.4 LTS.   
-
-<br>
 
 ---
 # 2. Protocol
@@ -149,7 +150,7 @@ For this example, we searched for PPAR-γ, applied a filter for **Homo sapiens**
 
 <br>
 
-![PPARG query in PDB showed 479 homo sapiens structures!](/Figures/PPARG_query_PDB.PNG)
+![PPARG query in PDB showed 479 homo sapiens structures!](/figures/PPARG_query_PDB.PNG)
 
 <br>
 
