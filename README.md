@@ -10,37 +10,32 @@
 ---
 
 ## Description
-This **AutodockTutorial** is a hands-on guide designed to introduce you to **AutoDock Vina** and to good programming practices in Python. Throughout the material, you will find guided examples and a series of exercises and test cases that encourage you to actively practice what you learn, while you perform basic linear algebra operations and write more reliable code through testing and debugging. It is best used by working through the sections in order, running the examples, and solving the exercises yourself.
+This **AutodockTutorial** provides a structured introduction to molecular docking using **AutoDock Vina**, with emphasis on the theoretical and practical principles underlying ligand–receptor binding analysis. It guides users through the preparation of molecular input files, definition of docking parameters, execution of docking simulations, and interpretation of predicted binding modes and affinity estimates. The tutorial is intended as a pedagogical resource for the development of foundational competencies in docking-based computational analysis. For a more comprehensive treatment of the subject, readers are encouraged to consult specialized literature and additional online resources.
+
 
 The tutorial is organized into three main parts:
-1. **Part 1:** Introduction to NumPy
-    1. Importing NumPy
-    2. Basic Structure of the Code
-    3. NumPy Arrays
-    4. Shape of Numpy Arrays
-    5. Accessing NumPy Arrays
-    6. Operations on NumPy Arrays
-    7. Linear Algebra
-    8. Saving and Loading Data with `.npy` and `.npz` Files
 
-
-2. **Part 2:** Introduction to Assert Statements and Testing 
-
-3. **Part 3:** Debugging Your Code 
+1. **Part 1:** Introduction
+2. **Part 2:** Protocol
+    - Selection of Structures (receptor and ligand)
+    - Preparation of Structures
+    - Docking Setup and Execution 
+    - Analysis of Results  
+3. **Part 3:** Practical Exercises
 
 
 ---
 
 ## Purpose
-The purpose of this notebook is to help you:
+The purpose of this tutorial is to help you:
 
-- Become comfortable using **NumPy** for numerical computing  
-- Understand and apply **basic linear algebra** operations in Python  
-- Learn how to **test your code** using `assert` statements and NumPy’s testing tools  
-- Develop **debugging skills** to find and fix errors more effectively  
-- Build confidence in writing **correct, readable, and maintainable** scientific Python code  
+- Become familiar with the basic workflow of **molecular docking** using AutoDock Vina  
+- Understand the preparation of **receptor and ligand input files** required for docking simulations  
+- Learn how to define and adjust **docking parameters** through configuration files  
+- Develop the ability to perform docking calculations and to interpret **predicted binding poses** and **affinity estimates**  
+- Build confidence in the use of docking-based computational tools for the analysis of **ligand–receptor interactions** 
 
-This tutorial is meant to be a **learning resource**, not a final reference. 
+This tutorial is intended to serve as a **learning resource** for foundational training in molecular docking, rather than as a comprehensive methodological reference.
 
 
 ---

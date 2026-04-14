@@ -9,25 +9,22 @@ layout: default
 
 ## AutoDock Tutorial
 
-This tutorial provides a hands-on introduction to **AutoDock Vina** and to essential programming practices in Python. It is structured around conceptual explanations, worked examples, and practical exercises designed to strengthen confidence in numerical computing. Throughout the material, learners will develop familiarity with AutoDock Vina, fundamental linear algebra operations, code validation using assert statements and NumPy testing tools, and debugging strategies for identifying and correcting common programming errors. The tutorial is intended to be completed in **Google Colab**, thereby allowing users to focus exclusively on coding and problem solving without the need for local installation. It should therefore be understood as a structured pedagogical resource for progressive skill development rather than as an exhaustive reference text.
+This **AutodockTutorial** provides a structured introduction to molecular docking using **AutoDock Vina**, with emphasis on the theoretical and practical principles underlying ligand–receptor binding analysis. It guides users through the preparation of molecular input files, definition of docking parameters, execution of docking simulations, and interpretation of predicted binding modes and affinity estimates. The tutorial is intended as a pedagogical resource for the development of foundational competencies in docking-based computational analysis. For a more comprehensive treatment of the subject, readers are encouraged to consult specialized literature and additional online resources.
 
 
 ---
 
 ### Contents:
-#### Part 1. Introduction to NumPy
-1. Python Basics  
-2. Using Google Colab for This Tutorial  
-3. Basic Structure of Codes Used in This Tutorial  
-4. NumPy Arrays  
-5. Shape of NumPy Arrays  
-6. Accessing NumPy Arrays  
-7. Operations on NumPy Arrays  
-8. Linear Algebra  
-9. Saving and Loading Data with `.npy` and `.npz` Files  
+#### Part 1. Introduction
 
-#### Part 2. Introduction to Assert Statements and Testing
-#### Part 3. Debugging Your Code
+#### Part 2. Protocol  
+1. Selection of Structures (receptor and ligand)
+2. Preparation of Structures  
+3. Docking Setup and Execution    
+4. Analysis of Results   
+
+#### Part 3: Practical Exercises
+
 
 ---
 
