@@ -15,6 +15,18 @@ data/
 *.npy
 *.pkl
 
+# Archivos de LaTeX/PDF
+*.tex
+*.bat
+*.aux
+*.log
+*.out
+*.pdf
+*.synctex.gz
+
+# Figuras
+*.png
+
 # Resultados y artifacts
 artifacts/
 results/

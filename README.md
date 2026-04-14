@@ -46,7 +46,7 @@ This tutorial is meant to be a **learning resource**, not a final reference.
 ---
 
 ## Authors
-**Ana C. Murrieta** and Flavio F. Contreras-Torres      
+**Ana C. Murrieta** and **Flavio F. Contreras-Torres**      
 Tecnológico de Monterrey      
 Monterrey, Mexico 
 
