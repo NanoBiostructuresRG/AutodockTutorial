@@ -9,7 +9,7 @@ layout: default
 
 ## AutoDock Tutorial
 
-This **AutodockTutorial** provides a structured introduction to molecular docking using **AutoDock Vina**, with emphasis on the theoretical and practical principles underlying ligand–receptor binding analysis. It guides users through the preparation of molecular input files, definition of docking parameters, execution of docking simulations, and interpretation of predicted binding modes and affinity estimates. The tutorial is intended as a pedagogical resource for the development of foundational competencies in docking-based computational analysis. For a more comprehensive treatment of the subject, readers are encouraged to consult specialized literature and additional online resources.
+This tutorial provides a structured introduction to molecular docking using **AutoDock Vina**, with emphasis on the theoretical and practical principles underlying ligand–receptor binding analysis. It guides users through the preparation of molecular input files, definition of docking parameters, execution of docking simulations, and interpretation of predicted binding modes and affinity estimates. The tutorial is intended as a pedagogical resource for the development of foundational competencies in docking-based computational analysis. For a more comprehensive treatment of the subject, readers are encouraged to consult specialized literature and additional online resources.
 
 
 ---
