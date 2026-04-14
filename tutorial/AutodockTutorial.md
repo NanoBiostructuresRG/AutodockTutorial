@@ -2,7 +2,7 @@
 **Version 1.0.0 - February, 2026. Monterrey**
 
 **Authors:** 
-[Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880). Tecnológico de Monterrey.
+[Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880). Tecnológico de Monterrey.  
 [Flavio F. Contreras-Torres](https://orcid.org/0000-0003-2375-131X). Tecnológico de Monterrey.
 
 
