@@ -1,13 +1,56 @@
-# Molecular Docking Tutorial with AutoDock Vina
+# Autodock Tutorial
 **Version 1.0.0 - February, 2026. Monterrey**
+
+**Authors:** 
+[Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880). Tecnológico de Monterrey.
+[Flavio F. Contreras-Torres](https://orcid.org/0000-0003-2375-131X). Tecnológico de Monterrey.
+
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 [![Version](https://img.shields.io/badge/version-v1.0-blue.svg)]()
 
+
 ---
-# 1. Introduction
+
+# INTRO
+This notebook is a **hands-on introduction** to molecular docking using AutoDock and to the essential concepts required to perform a basic docking workflow. It is intended for beginners as well as for learners with prior experience who wish to strengthen their understanding of ligand–receptor docking, structure preparation, docking setup, and interpretation of computational results.
+
+The notebook is divided into three main parts:
+
+- **Part 1: Introduction.** You will become familiar with the basic principles of molecular docking, the general purpose of AutoDock, and the role of docking in the computational analysis of ligand–receptor interactions.
+
+- **Part 2: Protocol.** You will learn the main steps of a typical docking workflow, including the selection of receptor and ligand structures, preparation of input files, definition of docking parameters, execution of docking calculations, and initial analysis of the results.
+
+- **Part 3: Results Interpretation and Practice.** You will learn how to examine predicted binding poses, evaluate docking outputs, identify common issues, and reinforce the workflow through guided practice.
+
+
+
+
+
+
+
+
+### Sources and Learning Materials
+
+This tutorial is not meant to be the first or the last resource you will use to learn AutoDock Vina and molecular docking. Instead, it is a **curated learning path** built from several tutorials, lecture notes, exercises, and official documentation.
+
+Many of the ideas, examples, and exercises presented here are **inspired by or adapted from** existing educational materials, including the official documentation and common teaching resources used in courses and online tutorials. For this reason, you may notice that some exercises or examples look **similar to ones you have seen elsewhere**. This is intentional: these problems are standard, well-tested ways of learning core concepts.
+
+The goal of this tutorial is not to present completely new material, but to **organize and connect** these concepts in a coherent, progressive way, with explanations, practice exercises, testing, and debugging techniques all in one place.
+
+You are encouraged to complement this tutorial with other resources, such as:
+
+- The official [AutoDock Vina documentation](https://autodock-vina.readthedocs.io/)
+- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/) [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/) 
+- Online tutorials [jRicciL](https://jriccil.github.io/Taller_Simulacion_Molecular/docking_con_adt4.html)
+
+Learning works best when you see the same ideas explained in **multiple ways and from multiple sources**.
+
+
+---
+# PART 1. Introduction to Molecular Docking
 
 **Molecular docking** is a core method in structure-based drug design (SBDD) for predicting, with a substantial degree of accuracy, the **binding pose** of small molecules in the active site of a receptor [[1]](https://doi.org/10.1016/j.rechem.2024.101319). It compromises several computational approaches with the goal to fit ligands into **multiple receptor states** (e.g., active/inactive, co-activator–bound, mutants), to **predict binding poses** and to **estimate affinity** (i.e., binding affinity). Docking returns a ranked list of compounds and highlights key interactions (e.g., anchor residues, H-bonds, π–π, hydrophobic contacts), supporting *binding-mode hypotheses* and ligand prioritization. Results depend on approximations—software [[2]](https://www.eurekaselect.com/article/51070) (e.g., AutoDock Vina/Qvina, MOE, Glide, etc.), parameters (e.g., search box, exhaustiveness, number of poses), and the **scoring function** (e.g., the AutoDock Vina empirical score and MOE's London dG scoring function). Robustness improves when using ensembles of receptor structures (multiple PDB entries, states, or mutants) and verifying that top best-scoring ligands from each docking run can be pooled and de-duplicated. 
 
