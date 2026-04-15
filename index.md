@@ -29,7 +29,7 @@ This tutorial provides a structured introduction to molecular docking using **Au
 ---
 
 ### Downloads
-- [Tutorial PDF](https://nanobiostructuresrg.github.io/NumpyTutorial/tutorial/NumpyTutorial.pdf). This is the most up-to-date version of the tutorial and may continue to receive minor revisions, including the correction of typographical errors and other small improvements.
+- [Tutorial PDF](https://nanobiostructuresrg.github.io/AutodockTutorial/tutorial/AutodockTutorial.pdf). This is the most up-to-date version of the tutorial and may continue to receive minor revisions, including the correction of typographical errors and other small improvements.
 
 
 ### Assessment Notebooks
