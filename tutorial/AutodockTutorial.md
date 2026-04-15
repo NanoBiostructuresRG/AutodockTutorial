@@ -1,9 +1,8 @@
-# Autodock Tutorial
+# AutoDock Tutorial
 **Version 1.0.0 - February, 2026. Monterrey**
 
 **Authors:** 
-[Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880). Tecnológico de Monterrey.  
-[Flavio F. Contreras-Torres](https://orcid.org/0000-0003-2375-131X). Tecnológico de Monterrey.
+[Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880), [Flavio F. Contreras-Torres](https://orcid.org/0000-0003-2375-131X). Tecnológico de Monterrey.
 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -43,7 +42,7 @@ The goal of this tutorial is not to present completely new material, but to **or
 You are encouraged to complement this tutorial with other resources, such as:
 
 - The official [AutoDock Vina documentation](https://autodock-vina.readthedocs.io/)
-- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/). [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/) 
+- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/), [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/) 
 - Online tutorials [jRicciL](https://jriccil.github.io/Taller_Simulacion_Molecular/docking_con_adt4.html)
 
 Learning works best when you see the same ideas explained in **multiple ways and from multiple sources**.
