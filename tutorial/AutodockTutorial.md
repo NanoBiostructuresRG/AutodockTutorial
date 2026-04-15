@@ -459,7 +459,7 @@ If everything else went well, then this should be the easiest part. To perform t
 
 And _voilà_, there we have our docking. We can see on the terminal the docking binding energy in kcal/mol. 
 
-![The terminal should show this docking log after running the docking command!](../figures/docking_log.png)
+![The terminal should show this docking log after running the docking command!](../figures/docking_log.png){width=85%}
 
 <br>
 
@@ -491,7 +491,7 @@ set transparency, 0.5
 
 If we want a more thorough analysis of the interactions we can save a **`*.pdb`** file with the receptor and the docked molecule, then open it in LigPlot+ to see the relevant residues and types of interactions. We will see the residues that interact with the molecule, with those red outlines indicating hydrophobic interactions, and the H-bonds will be indicated with green dashed lines.
 
-![LigPlot+ shows the interactions of the docked molecule!](../figures/18_docked.png)
+![LigPlot+ shows the interactions of the docked molecule!](../figures/18_docked.png){width=85%}
 
 
 > **Note:**  
