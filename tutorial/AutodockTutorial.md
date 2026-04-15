@@ -111,14 +111,14 @@ This tutorial focuses on **AutoDock Vina** and related utilities; please ensure 
 
 
 ---
-# 2. Protocol
+# PART 2. Protocol
 
 The docking methodology —as we apply it— consists of the following steps: 
 
-1. **Selection of Structures**
-1. **Preparation of Structures**
-1. **Docking Setup and Execution**
-1. **Analysis of Results**
+- **Selection of Structures**
+- **Preparation of Structures**
+- **Docking Setup and Execution**
+- **Analysis of Results**
 
 <br>
 
@@ -128,7 +128,7 @@ In this tutorial, we will go through each step using a simple example of one mol
 <br>
 
 
-## 2.1 Selection of Structures
+## Selection of Structures
 
 Before we event think about docking, we must clearly define the **object** and **subject** of the study — in other words, our **research goal** and the **biological system** under investigation. This step is crucial, as the selection of molecular structures must align with the specific aims of the study. 
 
@@ -140,7 +140,7 @@ Such compounds can be identified by consulting curated chemical databases, for i
 
 <br>
 
-### 2.1.1 Selection of the Receptor
+### Selection of the Receptor
 
 The next step is to select the appropriate molecular structures. In the case of the receptor, the structure should be obtained from **experimentally resolved structural data**, if available, using reliable sources such as the [Protein Data Bank (PDB)](https://www.rcsb.org/). 
 
@@ -185,7 +185,7 @@ Such a file contains the 3D coordinates of the protein, co-crystallized ligands 
 
 <br>
 
-### 2.1.2 Selection of the Ligand
+### Selection of the Ligand
 
 Here we will work with a single ligand: **RGZ**. We need to obtain its 3D structure. There are several common molecular representations—**SMILES**, **InChI**, **SDF** (Structure Data File), **PDB**, **MOL2**, etc. You may use whichever format best fits your workflow; however, for molecular docking, starting from an **`*.sdf`** file is often more reliable and tends to introduce fewer errors.
 
@@ -195,7 +195,7 @@ We can search **PubChem** using the common name of the compound **rosiglitazone*
 
 <br>
 
-![3D confomer download of Rosiglitazone in the PubChem server!](/Figures/pubchem_rgz_sdf_download.PNG)
+![3D confomer download of Rosiglitazone in the PubChem server!](/figures/pubchem_rgz_sdf_download.PNG)
 
 <br>
 
@@ -209,13 +209,13 @@ We can search **PubChem** using the common name of the compound **rosiglitazone*
 
 ---
 
-## 2.2. Preparation of Structures
+## Preparation of Structures
 
 Now that we have our raw structures, we need to prepare them in the correct format and ensuring they have the proper structure for docking.
 
 <br>
 
-### 2.2.1 Preparing the Receptor Structure
+### Preparing the Receptor Structure
 
 Open **`5YCP.pdb`** (downloaded from the PDB) in **PyMOL**. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms (e.g., ions, solvent). The goal is to produce two files: one with **only the receptor** and another with **only the crystallized agonist**.
 
@@ -239,7 +239,7 @@ Save the result as **`5YCP_receptor.pdb`**. Then isolate the ligand (**RGA**) an
 
 <br>
 
-![Raw structure as downloaded from the PDB 6MD4!](/Figures/6MD4_raw.png)
+![Raw structure as downloaded from the PDB 6MD4!](/figures/6MD4_raw.png)
 
 <br>
 
@@ -256,7 +256,7 @@ CHIMERA is used to open the sequence and copy it to a *.ali file, as follows.
 
 <br>
 
-### 2.2.2 Aligning the Canonical Sequence to the Crystal Template
+### Aligning the Canonical Sequence to the Crystal Template
 
 If the crystal structure is incomplete (missing residues/atoms), we will rebuild the receptor by **comparative (homology) modeling** with **MODELLER** using the **canonical UniProt sequence** as the target and the **clean PDB** as the template.
 
@@ -297,9 +297,9 @@ a.ending_model   = 3   # => generates 3 models: 1, 2, 3
 
 The script will generate one or more **PDB models** for the receptor’s crystallized region. You can obtain typical outputs (filenames depend on sequence):
 <br>
-1. PPARG_P37231-2.B99990001.pdb
-1. PPARG_P37231-2.B99990002.pdb
-1. PPARG_P37231-2.B99990003.pdb
+PPARG_P37231-2.B99990001.pdb 
+PPARG_P37231-2.B99990002.pdb 
+PPARG_P37231-2.B99990003.pdb
 
 and proceed with receptor preparation for docking.
 
@@ -311,7 +311,7 @@ In our case, we compared the modeled protein (**pink**) with the cleaned **5YCP*
 
 <br>
 
-![Alignment between the raw structure and our modeled protein!](/Figures/6MD4_model_alignment_0.128RMSD.png)
+![Alignment between the raw structure and our modeled protein!](/figures/6MD4_model_alignment_0.128RMSD.png)
 
 <br>
 
@@ -325,12 +325,13 @@ pdb_reres -204 PPARG_model.pdb > PPARG_model_reres204.pdb
 
 <br>
 
-### 2.2.3 Binding-Site Identification
+### Binding-Site Identification
 
 Once the receptor model is finalized, submit the **PDB** file to [Cavity Plus server](http://www.pkumdl.cn:8000/cavityplus/#/computation) to identify candidate binding pockets. The server ranks cavities by **druggability score** and reports **volume**, **surface area**, **centroid coordinates**, and **lining residues**.  
 These details help (a) pick the pocket to target and (b) define the docking box center.
 
 **What to record from CavityPlus**
+
 - Pocket ID (rank)
 - Centroid coordinates (x, y, z)
 - Key residues (for later interaction checks)
@@ -342,12 +343,12 @@ These details help (a) pick the pocket to target and (b) define the docking box 
 
 <br>
 
-![Main cavity calculated with Cavity Plus!](/Figures/cavityplus_details.PNG)
+![Main cavity calculated with Cavity Plus!](/figures/cavityplus_details.PNG)
 
 <br>
 
 
-### 2.2.4 Docking Search Space (Grid Box)
+### Docking Search Space (Grid Box)
 
 Define the Vina/Qvina search space based on the selected pocket:
 
@@ -371,31 +372,31 @@ Define the Vina/Qvina search space based on the selected pocket:
 <br>
 
 
-### 2.2.5 Preparing the Ligand Structure
+### Preparing the Ligand Structure
 
 To prepare the ligand, we need to convert the .sdf file into .pdb, do an energy minimization, and then convert it to .pdbqt for docking. In this step we will need to use Babel, which is installed in another environment called py2. When using Babel in Blackwing, we need to activate this environment by writing in the terminal:
 
-  `conda activate py2`
+`conda activate py2`
 
 Now, we can use Babel to convert our SDF file to PDB, ensuring that the structure has hydrogens:
 
-  `babel rgz.sdf -opdb -O rgz.pdb -h`
+`babel rgz.sdf -opdb -O rgz.pdb -h`
 
 We should visually inspect the output .pdb file to see that the connectivity and hydrogens are correct. Once we are sure that everything looks good now we will use obminimize to perform an energetic minimization of the structure using a force field. There are 5 possible force fields: GAFF, MMFF94, MMFF94S, Ghemical, and UFF, but I have found best results using MMFF94 (or GAFF). The number of steps of minimization also needs to be specified, 5,000 could be a good start for tests, but I like to do 20,000 steps to ensure enough steps to achieve a minimum, specially for flexible molecules. To do the minimization write in the terminal: 
 
-  `obminimize -n 20000 -ff MMFF94 rgz.pdb > rgz_min.pdb`
+`obminimize -n 20000 -ff MMFF94 rgz.pdb > rgz_min.pdb`
 
 Again, we should visually inspect the output to ensure the structure has the correct connectivity and valences. Finally, we need to convert our minimized .pdb structure into the expected .pdbqt file for docking with Autodock Vina. We will write in the terminal the following command: 
 
-  `babel rgz_min.pdb -opdbqt -O rgz.pdbqt`
+`babel rgz_min.pdb -opdbqt -O rgz.pdbqt`
 
 Before moving on we should (again) visually inspect the structure. In the .pdbqt files the non-polar hydrogens are not explicit, thus we will only see the hydrogens connected to non-carbon atoms. It is important to visually inspect the files, as sometimes we can see connectivity issues such as the next example: 
 
-![Bad connectivity in the converted .pdbqt file!](/Figures/pdbqt_bad_connectivity.png)
+![Bad connectivity in the converted .pdbqt file!](/figures/pdbqt_bad_connectivity.png)
 
 We can even see the worst connectivity possible as per the following example:
 
-![Even worse connectivity in the .pdbqt file!](/Figures/pdbqt_worst_connectivity.png)
+![Even worse connectivity in the .pdbqt file!](/figures/pdbqt_worst_connectivity.png)
 
 When seeing this, we should try to change the force field on the minimization step. If that does not work then we can add the -gen3d argument to the obminimize line
 
@@ -405,19 +406,19 @@ When seeing this, we should try to change the force field on the minimization st
 
 ---
 
-## 2.3. Docking Setup and Execution
+## Docking Setup and Execution
 
 Now we will need to finish our setup before performing the docking. Here we need to get the structure of the receptor in .pdbqt, as well as defining a docking box and other docking parameters. We will prepare the .pdbqt of the receptor and the docking box in one step using Chimera. We will use the modeled PPAR $\gamma$ (PPARG_model.pdb) and the rosiglitazone from the crystal (6MD4_ligand.pdb). Both structures will be opened in Chimera, then we will go to the "Tools" tab. then to the "Surface/Binding Analysis" tab. and finally select "AutoDock Vina". This will open a dialog box where we will need to define the output location and name (PPARG.pdbqt), select the structure corresponding to the receptor, and the one corresponding to the ligand. Then, in the center and size boxes is where the dimensions of the box will be defined, in cases where we have no idea where to begin we can start at center 0,0,0 and size 20,20,20. Then we will need to resize and define the box according to our needs; if we are interested in interactions with a particular region of the receptor (e.g. orthosteric site) then the box should encompass that region, in cases where we do not know where the ligands can interact then we can build a box that encompasses the whole receptor. 
 
 >Note: Do not make the box too tight, leave some room for error as some ligands could sneakily fit when we are restraining.
 
-![Definition of the docking configuration in Chimera!](/Figures/Chimera_docking_box.PNG)
+![Definition of the docking configuration in Chimera!](/figures/Chimera_docking_box.PNG)
 
 After defining the right box, we will click OK. Here, Chimera will attempt to dock the selected ligand to the receptor, and preparing a .pdbqt file of both the ligand and receptor, and  also adds hydrogens. We will also see a .conf file that was generated, this will become the configuration for our docking, here we see our box dimensions and three more parameters. Exhaustiveness means how extensively the docking will be, the default if 8, but I like to use 100 for more precise calculations. Energy range is the maximum energy difference between the best pose and the rest of reported poses. Finally num of poses is how many poses will report, the default is 10, but they could be reduced. 
 
 So, now we have our two .pdbqt structures for the receptor and ligand, and our .conf file, and we are ready to perform our first docking. 
 
-##Perform the docking
+## Perform the Docking
 
 If everything else went well, then this should be the easiest part. To perform the docking we will use the following command: 
 
@@ -425,17 +426,17 @@ If everything else went well, then this should be the easiest part. To perform t
 
 And _voilà_, there we have our docking. We can see on the terminal the docking binding energy in kcal/mol. 
 
-![The terminal should show this docking log after running the docking command!](/Figures/docking_log.PNG)
+![The terminal should show this docking log after running the docking command!](/figures/docking_log.PNG)
 
 <br>
 
 ---
 
-## 2.4. Analysis of Results
+## Analysis of Results
 
 We can open in Pymol the used structure and the output _docked.pdbqt file to see its best docking pose. We can also create some pretty nice figures with Pymol to showcase where the preffered pose of the ligand was on blind docking. To get the egenral figure of the blind docking we can open our receptor's .pdbqt file and all the _docked.pdbqt ligands in Pymol, we can also include the surface of the calculated cavity to showcase if the best docking poses fit within this orthosteric site. In the following figure we see the receptor in blue, the docked molecules in orange and the calculated binding site in yellow. 
 
-![Best poses after docking!](/Figures/blind_docking_site.png)
+![Best poses after docking!](/figures/blind_docking_site.png)
 
 To get the aestethic of this figure I first changed the background to white, then changed the ray trace mode with this command:
 
@@ -451,7 +452,7 @@ And I changed the presentation of the cavity to surface and changed its transpar
 
 If we want a more thorough analysis of the interactions we can save a .pdb file with the receptor and the docked molecule, then open it in LigPlot+ to see the relevant residues and types of interactions. We will see the residues that interact with the molecule, with those red outlines indicating hydrophobic interactions, and the H-bonds will be indicated with green dashed lines.
 
-![LigPlot+ shows the interactions of the docked molecule!](/Figures/18_docked.PNG)
+![LigPlot+ shows the interactions of the docked molecule!](/figures/18_docked.PNG)
 
 >Note: Be careful when dealing with the numbering of the receptor, we should usually use the canonical numbering, but when making new models the numbering can change and it will affect when we report our results and the numbers do not match the ones reported in the reference article from the crystal structure.
 
@@ -473,13 +474,16 @@ Now we will have selected the relevant residues. Finally, we can show in licoric
 
 This will label the selected interacting residues in their alpha carbons, and include the residue name and number. Now we can find the best position for our final figure, and click on the left bottom corner in the pymol window and click where it says "3-button viewing", this should change the mode to "3-button editing". Now we can move the labels by doing ctrl+right click and positions the labels in a way that they are readable. Finally, we adjust our ray trace settings and export our figure that should look something like this:
 
-![Closeup of the docked molecule showcasing its interactions with the relevant residues within 2.5 Å!](/Figures/docking_closeup.png)
+![Closeup of the docked molecule showcasing its interactions with the relevant residues within 2.5 Å!](/figures/docking_closeup.png)
 
 We can also do repetitions of the same experiment, or get more docking poses to get a statistical analysis of the docking energies and poses. We can do the docking on other conformations of PPAR $\gamma$, and analyze the differences between the energies and interactions with those conformations. We can also weight these energies on another parameter to get the Ligand efficacy metric to make more practical sense of the results.
 
 
 ---
 
-## License
+### License
 The content of this document itself is licensed under the terms and conditions of the [Creative Commons Attribution (CC BY 4.0) license](https://creativecommons.org/licenses/by/4.0/legalcode.en), and the underlying source code used to format and display that content is licensed under the [MIT license](https://github.com/NanoBiostructuresRG/AutodockTutorial/blob/main/LICENSE). See the LICENSE files for full details.
 
+### Attribution
+If you use or adapt this material, please provide appropriate credit to the original [authors](https://orcid.org/0000-0003-2375-131X) and repository:
+[https://github.com/NanoBiostructuresRG](https://github.com/NanoBiostructuresRG)
