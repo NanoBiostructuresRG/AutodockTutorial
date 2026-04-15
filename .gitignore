@@ -25,7 +25,8 @@ data/
 *.synctex.gz
 
 # Figuras
-###*.png
+*.png
+!figures/*.png
 
 # Resultados y artifacts
 artifacts/
