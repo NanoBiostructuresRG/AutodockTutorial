@@ -2,7 +2,7 @@
 **Version 1.0.0 - February, 2026. Monterrey**
 
 **Authors:** 
-[Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880), [Flavio F. Contreras-Torres](https://orcid.org/0000-0003-2375-131X). Tecnológico de Monterrey.
+[Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880) and [Flavio F. Contreras-Torres](https://orcid.org/0000-0003-2375-131X). Tecnológico de Monterrey.
 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -42,7 +42,7 @@ The goal of this tutorial is not to present completely new material, but to **or
 You are encouraged to complement this tutorial with other resources, such as:
 
 - The official [AutoDock Vina documentation](https://autodock-vina.readthedocs.io/)
-- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/), [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/) 
+- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/), [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/), etc.
 - Online tutorials [jRicciL](https://jriccil.github.io/Taller_Simulacion_Molecular/docking_con_adt4.html)
 
 Learning works best when you see the same ideas explained in **multiple ways and from multiple sources**.
@@ -65,7 +65,7 @@ Molecular docking and **virtual screening** are related but differ in scope and 
 
 <br>
 
-This is a self-authored tutorial for performing docking calculations with **AutoDock Vina**. The AutoDock Suite is a free, open–source software for the computational docking and virtual screening of small molecules against macromolecular receptors, developed at the [Center for Computational Structural Biology (CCSB)](https://ccsb.scripps.edu/), La Jolla, CA, USA. The suite currently includes complementary tools such as *AutoDock (AD4)*, *AutoDock Vina*, *Raccoon2*, *AutoDockTools*, and *AutoLigand*. The software has been implemented, calibrated, and tested on diverse protein–ligand complexes of biological and medicinal interest. For a comprehensive, step-by-step workflow, see the seminal article [[4]](https://doi.org/10.1038/nprot.2016.051) at Nature Protocols journal.
+This is a self-authored tutorial for performing docking calculations with **AutoDock Vina**. The AutoDock Suite is a free, open–source software for the computational docking and virtual screening of small molecules against macromolecular receptors, developed at the Center for Computational Structural Biology [(CCSB)](https://ccsb.scripps.edu/), La Jolla, CA, USA. The suite currently includes complementary tools such as *AutoDock (AD4)*, *AutoDock Vina*, *Raccoon2*, *AutoDockTools*, and *AutoLigand*. The software has been implemented, calibrated, and tested on diverse protein–ligand complexes of biological and medicinal interest. For a comprehensive, step-by-step workflow, see the seminal article [[4]](https://doi.org/10.1038/nprot.2016.051) at Nature Protocols journal.
 
 <br>
 
@@ -141,7 +141,7 @@ Such compounds can be identified by consulting curated chemical databases, for i
 
 ### Selection of the Receptor
 
-The next step is to select the appropriate molecular structures. In the case of the receptor, the structure should be obtained from **experimentally resolved structural data**, if available, using reliable sources such as the [Protein Data Bank (PDB)](https://www.rcsb.org/). 
+The next step is to select the appropriate molecular structures. In the case of the receptor, the structure should be obtained from **experimentally resolved structural data**, if available, using reliable sources such as the Protein Data Bank [(PDB)](https://www.rcsb.org/). 
 
 From the **PDB** search interface, we can look for our target protein and refine the results by taxonomy, organism, method of structure determination, resolution, release date, and more.
 
@@ -170,7 +170,7 @@ Once a suitable entry is identified, open its record and examine the metadata. Y
 - **Sequence features** (mutations, deletions, missing loops)
 - **Geometry/validation** (e.g., acceptable Ramachandran statistics)
 
-For this tutorial, we will use a **PPAR-γ** structure in its **active conformation** bound to RGZ: [PDB entry 5YCP](https://www.rcsb.org/structure/5YCP). 
+For this tutorial, we will use a **PPAR-γ** structure in its **active conformation** bound to RGZ: PDB entry [5YCP](https://www.rcsb.org/structure/5YCP). 
 
 On the entry page, select **`Download Files`** → **`Legacy PDB Format`**. Then, download the **`*.pdb`** structure from the PDB. Save the file to your working directory; in this tutorial, it is called **`5YCP.pdb`** (keep it as the raw reference).
 
@@ -266,6 +266,7 @@ Create an alignment file (you can find an example in **`seq_5YCP.ali`**) with tw
 3) the **`*.ali`** files follow a very specific structure of **81 character-long** lines for the sequences.
 
 General conventions you should follow:
+
 - The file uses **PIR/FASTA-like headers** that **MODELLER** expects, with records like `>P1;identifier`.  
   - Template line typically starts with `structureX:` and encodes **PDB code**, **start/end residue numbers**, and **chain**.  
   - Target line starts with `sequence:` and encodes the target identifier.
@@ -276,12 +277,14 @@ General conventions you should follow:
 > **Tip:** Reading the original PDB article helps you decide which regions are functionally relevant. Crystal structures often lack flexible **loops/termini** (no defined secondary structure), so do not force-model those unless needed.
 
 Once **`seq_5YCP.ali`** is ready, run your **MODELLER** script (e.g., **`construir_modelo.py`**) pointing to:
+
 - `alnfile` = `seq_5YCP.ali`  
 - `knowns` = template identifier (e.g., `5YCP_receptor`)  
 - `sequence` = target identifier (e.g., `PPARG_P37231-2`)  
 - `n_models` = number of models to generate (you will later choose the best by DOPE/other scores)
 
 In **AutoModel**, `n_models` is set via the index range:
+
 ```python
 a.starting_model = 1
 a.ending_model   = 3   # => generates 3 models: 1, 2, 3
@@ -295,14 +298,13 @@ a.ending_model   = 3   # => generates 3 models: 1, 2, 3
 
 
 The script will generate one or more **PDB models** for the receptor’s crystallized region. You can obtain typical outputs (filenames depend on sequence):
-<br>
-PPARG_P37231-2.B99990001.pdb 
-PPARG_P37231-2.B99990002.pdb 
-PPARG_P37231-2.B99990003.pdb
+
+- PPARG_P37231-2.B99990001.pdb
+- PPARG_P37231-2.B99990002.pdb
+- PPARG_P37231-2.B99990003.pdb
 
 and proceed with receptor preparation for docking.
 
-<br>
 
 This step outputs the specified number of models and their scores. Select the **top-scoring** one (e.g., by **DOPE**). You can also open the models in **PyMOL** and align them to the cleaned crystal structure to inspect **RMSD** and visualize differences in the **modeled regions**. Once satisfied, choose the model for the next steps.
 
