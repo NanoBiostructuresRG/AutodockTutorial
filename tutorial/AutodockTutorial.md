@@ -152,7 +152,7 @@ For this example, we searched for PPAR-γ, applied a filter for **Homo sapiens**
 
 <br>
 
-![PPARG query in PDB showed 479 homo sapiens structures!](/figures/PPARG_query_PDB.png)
+![PPARG query in PDB showed 479 homo sapiens structures!](../figures/PPARG_query_PDB.png)
 
 <br>
 
@@ -198,7 +198,7 @@ We can search **PubChem** using the common name of the compound **rosiglitazone*
 
 <br>
 
-![3D confomer download of Rosiglitazone in the PubChem server!](/figures/pubchem_rgz_sdf_download.png)
+![3D confomer download of Rosiglitazone in the PubChem server!](../figures/pubchem_rgz_sdf_download.png)
 
 <br>
 
@@ -242,7 +242,7 @@ Save the result as **`5YCP_receptor.pdb`**. Then isolate the ligand (**RGA**) an
 
 <br>
 
-![Raw structure as downloaded from the PDB 6MD4!](/figures/6MD4_raw.png)
+![Raw structure as downloaded from the PDB 6MD4!](../figures/6MD4_raw.png)
 
 <br>
 
@@ -320,7 +320,7 @@ In our case, we compared the modeled protein (**pink**) with the cleaned **5YCP*
 
 <br>
 
-![Alignment between the raw structure and our modeled protein!](/figures/6MD4_model_alignment_0.128RMSD.png)
+![Alignment between the raw structure and our modeled protein!](../figures/6MD4_model_alignment_0.128RMSD.png)
 
 <br>
 
@@ -352,7 +352,7 @@ These details help (a) pick the pocket to target and (b) define the docking box 
 
 <br>
 
-![Main cavity calculated with Cavity Plus!](/figures/cavityplus_details.png)
+![Main cavity calculated with Cavity Plus!](../figures/cavityplus_details.png)
 
 <br>
 
@@ -419,11 +419,12 @@ babel rgz_min.pdb -opdbqt -O rgz.pdbqt
 Before moving on we should (again) visually inspect the structure. In the .pdbqt files the non-polar hydrogens are not explicit, thus we will only see the hydrogens connected to non-carbon atoms. It is important to visually inspect the files, as sometimes we can see connectivity issues such as the next example: 
 
 
-![Bad connectivity in the converted .pdbqt file!](/figures/pdbqt_bad_connectivity.png)
+![Bad connectivity in the converted .pdbqt file!](../figures/pdbqt_bad_connectivity.png)
 
 We can even see the worst connectivity possible as per the following example:
 
-![Even worse connectivity in the .pdbqt file!](/figures/pdbqt_worst_connectivity.png)
+
+![Even worse connectivity in the .pdbqt file!](../figures/pdbqt_worst_connectivity.png)
 
 When seeing this, we should try to change the force field on the minimization step. If that does not work then we can add the -gen3d argument to the obminimize line
 
@@ -442,7 +443,7 @@ Now we will need to finish our setup before performing the docking. Here we need
 > **Note:**  
 > Do not make the box too tight, leave some room for error as some ligands could sneakily fit when we are restraining.
 
-![Definition of the docking configuration in Chimera!](/figures/chimera_docking_box.png)
+![Definition of the docking configuration in Chimera!](../figures/chimera_docking_box.png)
 
 After defining the right box, we will click OK. Here, Chimera will attempt to dock the selected ligand to the receptor, and preparing a .pdbqt file of both the ligand and receptor, and  also adds hydrogens. We will also see a .conf file that was generated, this will become the configuration for our docking, here we see our box dimensions and three more parameters. Exhaustiveness means how extensively the docking will be, the default if 8, but I like to use 100 for more precise calculations. Energy range is the maximum energy difference between the best pose and the rest of reported poses. Finally num of poses is how many poses will report, the default is 10, but they could be reduced. 
 
@@ -458,7 +459,7 @@ If everything else went well, then this should be the easiest part. To perform t
 
 And _voilà_, there we have our docking. We can see on the terminal the docking binding energy in kcal/mol. 
 
-![The terminal should show this docking log after running the docking command!](/figures/docking_log.png)
+![The terminal should show this docking log after running the docking command!](../figures/docking_log.png)
 
 <br>
 
@@ -468,7 +469,7 @@ And _voilà_, there we have our docking. We can see on the terminal the docking 
 
 We can open in Pymol the used structure and the output _docked.pdbqt file to see its best docking pose. We can also create some pretty nice figures with Pymol to showcase where the preffered pose of the ligand was on blind docking. To get the egenral figure of the blind docking we can open our receptor's **`*.pdbqt`** file and all the _docked.pdbqt ligands in Pymol, we can also include the surface of the calculated cavity to showcase if the best docking poses fit within this orthosteric site. In the following figure we see the receptor in blue, the docked molecules in orange and the calculated binding site in yellow. 
 
-![Best poses after docking!](/figures/blind_docking_site.png)
+![Best poses after docking!](../figures/blind_docking_site.png)
 
 To get the aestethic of this figure, I first changed the background to white, then changed the ray trace mode with this command:
 
@@ -490,7 +491,8 @@ set transparency, 0.5
 
 If we want a more thorough analysis of the interactions we can save a **`*.pdb`** file with the receptor and the docked molecule, then open it in LigPlot+ to see the relevant residues and types of interactions. We will see the residues that interact with the molecule, with those red outlines indicating hydrophobic interactions, and the H-bonds will be indicated with green dashed lines.
 
-![LigPlot+ shows the interactions of the docked molecule!](/figures/18_docked.png)
+![LigPlot+ shows the interactions of the docked molecule!](../figures/18_docked.png)
+
 
 > **Note:**  
 > Be careful when dealing with the numbering of the receptor, we should usually use the canonical numbering, but when making new models the numbering can change and it will affect when we report our results and the numbers do not match the ones reported in the reference article from the crystal structure.
@@ -521,7 +523,7 @@ label n. CA and i. 235, "%s%s" % (resn,resi)
 
 This will label the selected interacting residues in their alpha carbons, and include the residue name and number. Now we can find the best position for our final figure, and click on the left bottom corner in the pymol window and click where it says "3-button viewing", this should change the mode to "3-button editing". Now we can move the labels by doing ctrl+right click and positions the labels in a way that they are readable. Finally, we adjust our ray trace settings and export our figure that should look something like this:
 
-![Closeup of the docked molecule showcasing its interactions with the relevant residues within 2.5 Å!](/figures/docking_closeup.png)
+![Closeup of the docked molecule showcasing its interactions with the relevant residues within 2.5 Å!](../figures/docking_closeup.png)
 
 We can also do repetitions of the same experiment, or get more docking poses to get a statistical analysis of the docking energies and poses. We can do the docking on other conformations of PPAR $\gamma$, and analyze the differences between the energies and interactions with those conformations. We can also weight these energies on another parameter to get the Ligand efficacy metric to make more practical sense of the results.
 
