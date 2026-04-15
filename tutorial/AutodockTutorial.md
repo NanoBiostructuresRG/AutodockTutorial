@@ -413,7 +413,7 @@ Now we will need to finish our setup before performing the docking. Here we need
 
 >Note: Do not make the box too tight, leave some room for error as some ligands could sneakily fit when we are restraining.
 
-![Definition of the docking configuration in Chimera!](/figures/Chimera_docking_box.png)
+![Definition of the docking configuration in Chimera!](/figures/chimera_docking_box.png)
 
 After defining the right box, we will click OK. Here, Chimera will attempt to dock the selected ligand to the receptor, and preparing a .pdbqt file of both the ligand and receptor, and  also adds hydrogens. We will also see a .conf file that was generated, this will become the configuration for our docking, here we see our box dimensions and three more parameters. Exhaustiveness means how extensively the docking will be, the default if 8, but I like to use 100 for more precise calculations. Energy range is the maximum energy difference between the best pose and the rest of reported poses. Finally num of poses is how many poses will report, the default is 10, but they could be reduced. 
 
