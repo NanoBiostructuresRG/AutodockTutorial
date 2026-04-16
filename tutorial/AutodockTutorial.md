@@ -140,6 +140,7 @@ For this example, we searched for PPAR-γ, applied a filter for **Homo sapiens**
 ![PPARG query in the PDB showing 479 Homo sapiens structures.](../figures/PPARG_query_PDB.png){ width=90% }
 
 
+
 > **Note:**  
 > - The PDB is a public repository that currently hosts over **240,000** three-dimensional structures of biomolecules from a wide range of organisms.
 > - In cases where no experimentally resolved structures are available in the PDB (e.g., X-ray, cryo-EM, or NMR), alternative approaches such as **homology modeling** or **computational prediction** (e.g., AlphaFold) must be employed. These procedures, however, fall outside the scope of this tutorial.
