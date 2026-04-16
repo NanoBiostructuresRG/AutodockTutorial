@@ -137,7 +137,7 @@ From the **PDB** search interface, we can look for our target protein and refine
 For this example, we searched for PPAR-γ, applied a filter for **Homo sapiens**, and sorted the results from **highest to lowest resolution**. This yielded **479** structures, from which we will choose the most suitable entry based on biological relevance and structural quality.
 
 
-![PPARG query in the PDB showing 479 Homo sapiens structures.](../figures/PPARG_query_PDB.png){ width=90% }
+![PPARG query in the PDB showing 479 Homo sapiens structures.](../figures/PPARG_query_PDB.png)
 
 
 
