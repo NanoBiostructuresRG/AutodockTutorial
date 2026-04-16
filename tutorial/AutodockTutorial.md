@@ -18,7 +18,7 @@ This notebook is a **hands-on introduction** to molecular docking using AutoDock
 
 The notebook is divided into three main parts:
 
-- **Part 1: Introduction.** You will become familiar with the basic principles of molecular docking, the general purpose of AutoDock, and the role of docking in the computational analysis of ligand–receptor interactions.
+- **Part 1: Introduction to Molecular Docking.** You will become familiar with the basic principles of molecular docking, the general purpose of AutoDock, and the role of docking in the computational analysis of ligand–receptor interactions.
 
 - **Part 2: Protocol.** You will learn the main steps of a typical docking workflow, including the selection of receptor and ligand structures, preparation of input files, definition of docking parameters, execution of docking calculations, and initial analysis of the results.
 
@@ -28,11 +28,11 @@ The notebook is divided into three main parts:
 
 ### Sources and Learning Materials
 
-This tutorial is not meant to be the first or the last resource you will use to learn AutoDock Vina and molecular docking. Instead, it is a **curated learning path** built from several tutorials, lecture notes, exercises, and official documentation.
+This tutorial is not meant to be the first or the last resource you will use to learn **AutoDock Vina** and molecular docking. Instead, it is a curated learning path built from several tutorials, lecture notes, exercises, and official documentation.
 
-Many of the ideas, examples, and exercises presented here are **inspired by or adapted from** existing educational materials, including the official documentation and common teaching resources used in courses and online tutorials. For this reason, you may notice that some exercises or examples look **similar to ones you have seen elsewhere**. This is intentional: these problems are standard, well-tested ways of learning core concepts.
+Many of the ideas, examples, and exercises presented here are inspired by or adapted from existing educational materials, including the official documentation and common teaching resources used in courses and online tutorials. For this reason, you may notice that some exercises or examples look similar to ones you have seen elsewhere. This is intentional: these problems are standard, well-tested ways of learning core concepts.
 
-The goal of this tutorial is not to present completely new material, but to **organize and connect** these concepts in a coherent, progressive way, with explanations, practice exercises, testing, and debugging techniques all in one place.
+The goal of this tutorial is not to present completely new material, but to organize and connect these concepts in a coherent, progressive way, with explanations, practice exercises, testing, and debugging techniques all in one place.
 
 You are encouraged to complement this tutorial with other resources, such as:
 
@@ -40,21 +40,18 @@ You are encouraged to complement this tutorial with other resources, such as:
 - Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/), [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/), etc.
 - Online tutorials [jRicciL](https://jriccil.github.io/Taller_Simulacion_Molecular/docking_con_adt4.html)
 
-Learning works best when you see the same ideas explained in **multiple ways and from multiple sources**.
+Learning works best when you see the **same ideas explained in multiple ways and from multiple sources**.
 
-
-> **Note:**  
-> The instructions adopted in this tutorial are based on a working environment running Ubuntu 22.04.4 LTS.   
 
 <br>
 
 # PART 1. Introduction to Molecular Docking
 
-**Molecular docking** is a core method in structure-based drug design (SBDD) for predicting, with a substantial degree of accuracy, the **binding pose** of small molecules in the active site of a receptor [[1]](https://doi.org/10.1016/j.rechem.2024.101319). It compromises several computational approaches with the goal to fit ligands into **multiple receptor states** (e.g., active/inactive, co-activator–bound, mutants), to **predict binding poses** and to **estimate affinity** (i.e., binding affinity). Docking returns a ranked list of compounds and highlights key interactions (e.g., anchor residues, H-bonds, π–π, hydrophobic contacts), supporting *binding-mode hypotheses* and ligand prioritization. Results depend on approximations—software [[2]](https://www.eurekaselect.com/article/51070) (e.g., AutoDock Vina/Qvina, MOE, Glide, etc.), parameters (e.g., search box, exhaustiveness, number of poses), and the **scoring function** (e.g., the AutoDock Vina empirical score and MOE's London dG scoring function). Robustness improves when using ensembles of receptor structures (multiple PDB entries, states, or mutants) and verifying that top best-scoring ligands from each docking run can be pooled and de-duplicated. 
+**Molecular docking** is a core method in structure-based drug design (SBDD) for predicting, with a substantial degree of accuracy, the binding pose of small molecules in the active site of a receptor [[1]](https://doi.org/10.1016/j.rechem.2024.101319). It compromises several computational approaches with the goal to fit ligands into multiple receptor states (e.g., active/inactive, co-activator–bound, mutants), to **predict binding poses** and to **estimate affinity** (i.e., binding affinity). Docking returns a ranked list of compounds and highlights key interactions (e.g., anchor residues, H-bonds, π–π, hydrophobic contacts), supporting *binding-mode hypotheses* and ligand prioritization. Results depend on approximations—software [[2]](https://www.eurekaselect.com/article/51070) (e.g., AutoDock Vina/Qvina, MOE, Glide, etc.), parameters (e.g., search box, exhaustiveness, number of poses), and the **scoring function** (e.g., the AutoDock Vina empirical score, MOE's London dG scoring function, and others). Robustness improves when using ensembles of receptor structures (i.e., multiple PDB entries, states, or mutants) and verifying that top best-scoring ligands from each docking run can be pooled and de-duplicated. 
 
 Molecular docking and **virtual screening** are related but differ in scope and purpose. Docking typically refers to evaluating one (or a small set of) ligand–receptor pairs to predict binding pose(s), estimate affinity, and rationalize key contacts. Virtual screening [[3]](https://www.tandfonline.com/doi/full/10.1517/17460441.2010.484460) applies docking (and often other filters) **at scale** to large libraries, ranking compounds to prioritize a small subset for experimental testing. In practice, docking is the *engine* that generates poses and scores; virtual screening is the *workflow* that uses that engine repeatedly—adding library preparation, property/PAINS filters, rescoring or consensus scoring, and enrichment/hit-rate assessment—to identify novel chemotypes.
 
-This is a self-authored tutorial for performing docking calculations with **AutoDock Vina**. The AutoDock Suite is a free, open–source software for the computational docking and virtual screening of small molecules against macromolecular receptors, developed at the Center for Computational Structural Biology [(CCSB)](https://ccsb.scripps.edu/), La Jolla, CA, USA. The suite currently includes complementary tools such as *AutoDock (AD4)*, *AutoDock Vina*, *Raccoon2*, *AutoDockTools*, and *AutoLigand*. The software has been implemented, calibrated, and tested on diverse protein–ligand complexes of biological and medicinal interest. For a comprehensive, step-by-step workflow, see the seminal article [[4]](https://doi.org/10.1038/nprot.2016.051) at Nature Protocols journal.
+This is a self-authored tutorial for performing docking calculations with [AutoDock Vina](https://vina.scripps.edu/). The AutoDock Suite is a free, open–source software for the computational docking and virtual screening of small molecules against macromolecular receptors, developed at the Center for Computational Structural Biology [(CCSB)](https://ccsb.scripps.edu/), La Jolla, CA, USA. The suite currently includes complementary tools such as *AutoDock (AD4)*, *AutoDock Vina*, *Raccoon2*, *AutoDockTools*, and *AutoLigand*. The software has been implemented, calibrated, and tested on diverse protein–ligand complexes of biological and medicinal interest. For a comprehensive, step-by-step workflow, see the seminal article [[4]](https://doi.org/10.1038/nprot.2016.051) at Nature Protocols journal.
 
 Before we continue, a brief note on the differences between **AutoDock (AD4)** and **AutoDock Vina**:
 
@@ -80,7 +77,7 @@ Before we continue, a brief note on the differences between **AutoDock (AD4)** a
 > Use **AD4** when you need term-level energy decomposition or to reproduce legacy protocols; use **Vina/QVina** for streamlined, high-throughput docking.
 
 
-Finally, in both cases, validate the protocol by re-docking ligands into cognate co-crystal structures of **comparable conformational complexity**.
+In both cases validate the protocol by re-docking ligands into cognate co-crystal structures of **comparable conformational complexity**.
 
 
 This tutorial focuses on **AutoDock Vina** and related utilities; please ensure they are pre-instaled on your system: 
@@ -96,6 +93,8 @@ This tutorial focuses on **AutoDock Vina** and related utilities; please ensure 
 - **LigPlot+** - Visualization of protein-ligand interactions
 - **Bash** - Shell scripting for automatization of repetitive tasks 
 
+> **Note:**  
+> The instructions adopted in this tutorial are based on a working environment running Ubuntu 22.04.4 LTS.   
 
 <br>
 
@@ -119,9 +118,9 @@ In this tutorial, we will go through each step using a simple example of one mol
 
 Before we event think about docking, we must clearly define the **object** and **subject** of the study — in other words, our **research goal** and the **biological system** under investigation. This step is crucial, as the selection of molecular structures must align with the specific aims of the study. 
 
-In this tutorial, for example, our goal is to investigate the **agonistic activity** on the receptor **PPAR-γ** (the object), given that its activation has been reported to have **therapeutic potential** in regulating metabolic processes involved in adipogenesis, glucose homeostasis, inflammation, and the uptake and storage of fatty acids (the subjects).
+In this tutorial, for example, our goal is to investigate the agonistic activity on the receptor **PPAR-γ** (the object), given that its activation has been reported to have **therapeutic potential** in regulating metabolic processes involved in adipogenesis, glucose homeostasis, inflammation, and the uptake and storage of fatty acids (the subjects).
 
-We will be working with the **active conformation** of the **human PPAR-γ receptor**. Therefore, it is essential to select ligands that have been experimentally validated as **agonists** of PPAR-γ.
+We will be working with the **active conformation** of the human PPAR-γ receptor. Therefore, it is essential to select ligands that have been experimentally validated as **agonists** of PPAR-γ.
 
 Such compounds can be identified by consulting curated chemical databases, for instance, [ChEMBL](https://ebi.ac.uk/chembl/), where bioactivity data from experimental assays are publicly available.
 
@@ -134,7 +133,7 @@ The next step is to select the appropriate molecular structures. In the case of 
 
 From the **PDB** search interface, we can look for our target protein and refine the results by taxonomy, organism, method of structure determination, resolution, release date, and more.
 
-For this example, we searched for PPAR-γ, applied a filter for **Homo sapiens**, and sorted the results from **highest to lowest resolution**. This yielded **479** structures, from which we will choose the most suitable entry based on biological relevance and structural quality.
+For this example, we searched for PPAR-γ, applied a filter for Homo sapiens, and sorted the results from highest to lowest resolution. This yielded **479** structures, from which we will choose the most suitable entry based on biological relevance and structural quality.
 
 
 ![PPARG query in the PDB showing 479 Homo sapiens structures.](../figures/PPARG_query_PDB.png){ width=90% }
@@ -143,10 +142,10 @@ For this example, we searched for PPAR-γ, applied a filter for **Homo sapiens**
 
 > **Note:**  
 > - The PDB is a public repository that currently hosts over **240,000** three-dimensional structures of biomolecules from a wide range of organisms.
-> - In cases where no experimentally resolved structures are available in the PDB (e.g., X-ray, cryo-EM, or NMR), alternative approaches such as **homology modeling** or **computational prediction** (e.g., AlphaFold) must be employed. These procedures, however, fall outside the scope of this tutorial.
+> - In cases where no experimentally resolved structures are available in the PDB (e.g., X-ray, cryo-EM, or NMR), alternative approaches such as homology modeling or computational prediction (e.g., AlphaFold) must be employed. These procedures, however, fall outside the scope of this tutorial.
 
 
-From here, we must review the results list and **inspect candidate structures** carefully. Be cautious: search queries often return **co-activators**, **DNA/RNA complexes**, or other assemblies that may **not** match the intended target.
+From here, we must review the results list and inspect candidate structures carefully. Be cautious: search queries often return **co-activators**, **DNA/RNA complexes**, or other assemblies that may not match the intended target.
 
 Once a suitable entry is identified, open its record and examine the metadata. You should verify:
 
@@ -167,7 +166,7 @@ Such a file contains the 3D coordinates of the protein, co-crystallized ligands 
 
 > **Note:**  
 > - Although **PDBx/mmCIF** is the modern, preferred format, many downstream tools in docking pipelines still expect **Legacy PDB**. We use **`5YCP.pdb`** here for compatibility, and we will convert or clean it in later steps as needed.  
-> - We recommend consulting the **original publication** associated with the selected **PDB entry** to verify that the **system** is appropriate and to review the reported **structural details**, including the interactions with **co-crystallized ligand(s)**.
+> - We recommend consulting the original publication associated with the selected **PDB entry** to verify that the system is appropriate and to review the reported structural details, including the interactions with co-crystallized ligand(s).
 
 
 <br>
@@ -186,9 +185,9 @@ We can search **PubChem** using the common name of the compound **rosiglitazone*
 
 
 > **Note:**  
-> - In this example, we will **manually** search for the structure of rosiglitazone (i.e., **`rgz.sdf`**). For cases involving a large **list of ligands**, you can use the **PubChem API** to build a Python script that automatically fetches SDF files and associated metadata.
+> - In this example, we will manually search for the structure of rosiglitazone (i.e., **`rgz.sdf`**). For cases involving a large list of ligands, you can use the **PubChem API** to build a Python script that automatically fetches SDF files and associated metadata.
 > - To verify correct atomic connectivity, the **`rgz.sdf`** file can be opened using a graphical viewer such as **PyMOL** or **UCSF Chimera** .
-> - For highly flexible molecules, a **3D conformer** may not be available in PubChem; in that case, use the **2D** record instead.
+> - For highly flexible molecules, a **3D** conformer may not be available in PubChem; in that case, use the **2D** record instead.
 
 
 <br>
@@ -200,7 +199,7 @@ Now that we have our raw structures, we need to prepare them in the correct form
 
 ### Preparing the Receptor Structure
 
-Open **`5YCP.pdb`** (downloaded from the PDB) in **PyMOL**. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms (e.g., ions, solvent). The goal is to produce two files: one with **only the receptor** and another with **only the crystallized agonist**.
+Open **`5YCP.pdb`** (downloaded from the PDB repository) in PyMOL. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms (e.g., ions, solvent). The goal is to produce two files: one with **only the receptor** and another with **only the crystallized agonist**.
 
 In **PyMOL**, select the relevant receptor chain (e.g., Chain **A**) and remove everything else:
 
