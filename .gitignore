@@ -29,6 +29,11 @@ data/
 *.png
 !figures/*.png
 
+# Archivos de trabajo
+*.cif
+*.pdb
+
+
 # Resultados y artifacts
 artifacts/
 results/

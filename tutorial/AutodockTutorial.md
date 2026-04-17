@@ -157,11 +157,11 @@ Once a suitable entry is identified, open its record and examine the metadata. Y
 - **Sequence features** (mutations, deletions, missing loops)
 - **Geometry/validation** (e.g., acceptable Ramachandran statistics)
 
-For this tutorial, we will use a **PPAR-γ** structure in its **active conformation** bound to RGZ: PDB entry [5YCP](https://www.rcsb.org/structure/5YCP). 
+For this tutorial, we will use a **PPAR-γ** structure in its **active conformation** with the PDB entry [5YCP](https://www.rcsb.org/structure/5YCP). 
 
 On the entry page, select **`Download Files`** → **`Legacy PDB Format`**. Then, download the **`*.pdb`** structure from the PDB. Save the file to your working directory; in this tutorial, it is called **`5YCP.pdb`** (keep it as the raw reference).
 
-Such a file contains the 3D coordinates of the protein, co-crystallized ligands (e.g., rosigltazone), co-activators (e.g., peptides), and other heteroatoms (e.g., ions, solvent).
+Such a file contains the 3D coordinates of the protein, co-crystallized ligands (e.g., small organic molecules), co-activators (e.g., peptides), and other heteroatoms (e.g., ions, solvent).
 
 
 > **Note:**  
@@ -199,9 +199,9 @@ Now that we have our raw structures, we need to prepare them in the correct form
 
 ### Preparing the Receptor Structure
 
-Open **`5YCP.pdb`** (downloaded from the PDB repository) in PyMOL. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms (e.g., ions, solvent). The goal is to produce two files: one with **only the receptor** and another with **only the crystallized agonist**.
+In **PyMOL**, open the downloaded **`5YCP.pdb`** file from PDB. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms (e.g., ions, solvent). The goal is to produce one files with **only the receptor**. Furthermore, we will prepare another file with **the crystallized agonist**.
 
-In **PyMOL**, select the relevant receptor chain (e.g., Chain **A**) and remove everything else:
+Select the relevant receptor chain (e.g., Chain **A**) and remove everything else. Save the result as **`5YCP_receptor.pdb`**. 
 
 
 ```bash
@@ -211,9 +211,7 @@ PyMOL > select HOH
 PyMOL > remove sele
 ```
 
-Save the result as **`5YCP_receptor.pdb`**. Then isolate the ligand (**RGA**) and save it as **`5YCP_ligand.pdb`**.
-
-
+Then isolate the ligand (**RGA**, **BRL**, etc) and save it as **`5YCP_ligand.pdb`**.
 
 ![Raw structure as downloaded from the PDB 6MD4. In the figure below, the receptor is shown in blue, the ligand in green, and the co-crystallized components to be removed in red.](../figures/6MD4_raw.png){ width=70% }
 
@@ -256,7 +254,7 @@ General conventions you should follow:
 
 > **Tip:** Reading the original PDB article helps you decide which regions are functionally relevant. Crystal structures often lack flexible **loops/termini** (no defined secondary structure), so do not force-model those unless needed.
 
-Once **`seq_5YCP.ali`** is ready, run your **MODELLER** script (e.g., **`construir_modelo.py`**) pointing to:
+Once **`seq_5YCP.ali`** is ready, run your **MODELLER** script (e.g., **`make_model.py`**) pointing to:
 
 - `alnfile` = `seq_5YCP.ali`
 - `knowns` = template identifier (e.g., `5YCP_receptor`)
@@ -274,7 +272,7 @@ a.ending_model   = 3    # generates three models.
 **Run** from your working directory:
 
 ```bash
-python construir_modelo.py
+python make_modelo.py
 ```
 
 The script will generate one or more **PDB models** for the receptor’s crystallized region. You can obtain typical outputs (filenames depend on sequence):
