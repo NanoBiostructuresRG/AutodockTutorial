@@ -219,7 +219,7 @@ Save the result as **`5YCP_receptor.pdb`**. Then isolate the ligand (**RGA**) an
 
 
 
-If the receptor structure contains **unresolved residues/atoms** that could not be refined in the crystallographic study, we will **rebuild the receptor by homology** using the **canonical sequence**. First, retrieve the canonical sequence from the [UniProt](https://www.uniprot.org/) database. 
+If the receptor structure contains **unresolved residues/atoms** that could not be refined in the crystallographic study, we will rebuild the receptor by **homology** using the **canonical sequence**. First, retrieve the canonical sequence from the [UniProt](https://www.uniprot.org/) database. 
 
 Search for **human PPAR-γ** and open entry **[P37231-2](https://www.uniprot.org/uniprotkb/P37231/entry)**. In the **Sequences** section, copy the **canonical** sequence for downstream modeling.
 
