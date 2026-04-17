@@ -36,8 +36,7 @@ This tutorial provides a structured introduction to molecular docking using **Au
 
 To complete the training and obtain credit, participants are required to engage with the tutorial materials in the prescribed sequence and to complete the two mandatory assessment notebooks:
 
-- [Python Basics with Google Colab](https://nbviewer.org/github/NanoBiostructuresRG/NumpyTutorial/blob/main/numpy_python_basics.ipynb)
-- [Numpy Tutorial Exercises](https://nbviewer.org/github/NanoBiostructuresRG/NumpyTutorial/blob/main/numpy_tutorial_exercises.ipynb)
+- [PDB Structure Preparation](https://nbviewer.org/github/NanoBiostructuresRG/AutodockTutorial/blob/main/notebooks/pdb_structure_preparation.ipynb)
 
 
 ---
