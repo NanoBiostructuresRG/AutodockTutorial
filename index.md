@@ -38,6 +38,8 @@ To complete the training and obtain credit, participants are required to engage 
 
 - [PDB Structure Preparation](https://nbviewer.org/github/NanoBiostructuresRG/AutodockTutorial/blob/main/notebooks/pdb_structure_preparation.ipynb)
 
+- [Receptor Reconstruction](https://nbviewer.org/github/NanoBiostructuresRG/AutodockTutorial/blob/main/notebooks/receptor_reconstruction.ipynb)
+
 
 ---
 
