@@ -277,20 +277,19 @@ python make_modelo.py
 
 The script will generate one or more **PDB models** for the receptor’s crystallized region. You can obtain typical outputs (filenames depend on sequence):
 
-- PPARG_P37231-2.B99990001.pdb
-- PPARG_P37231-2.B99990002.pdb
-- PPARG_P37231-2.B99990003.pdb
 
-and proceed with receptor preparation for docking.
-
-
-This step outputs the specified number of models and their scores. Select the **top-scoring** one (e.g., by **DOPE**). You can also open the models in **PyMOL** and align them to the cleaned crystal structure to inspect **RMSD** and visualize differences in the **modeled regions**. Once satisfied, choose the model for the next steps.
-
-In our case, we compared the modeled protein (**pink**) with the cleaned **5YCP** structure (**blue**) and obtained an **RMSD of 0.090 Å**, indicating excellent agreement. The main deviations occur in **loop regions**; notably, the previously missing loop was modeled toward the **orthosteric site**, which could interfere with docking. Keep this in mind when selecting structures.
+| Filename | molpdf | DOPE score | GA341 score |
+|---|---:|---:|---:|
+| `PPARG_P37231-2.B99990001.pdb` | 1173.57715 | -35933.17969 | 1.00000 |
+| `PPARG_P37231-2.B99990002.pdb` | 1117.48389 | -36061.49219 | 1.00000 |
+| `PPARG_P37231-2.B99990003.pdb` | 1189.37024 | -35883.63281 | 1.00000 |
 
 
+This step outputs the specified number of models and their scores. Select the **top-scoring** one (e.g., by **DOPE**). 
 
 ![Alignment between the raw structure and our modeled protein.](../figures/6MD4_model_alignment_0.128RMSD.png){ width=55% }
+
+You can also open the models in **PyMOL** and align them to the cleaned crystal structure to inspect **RMSD** and visualize differences in the **modeled regions**. In our case, we compared the modeled protein (**pink**) with the cleaned **5YCP** structure (**blue**) and obtained an **RMSD of 0.090 Å**, indicating excellent agreement. The main deviations occur in **loop regions**; notably, the previously missing loop was modeled toward the **orthosteric site**, which could interfere with docking. Keep this in mind when selecting structures. Once satisfied, choose the model for the next steps and proceed with receptor preparation for docking.
 
 The numbering for amino acid should be homogolized with **UNIPROT** using **pdb-tools** as follows:
 
@@ -302,6 +301,8 @@ pdb_reres -204 PPARG_model.pdb > PPARG_model_reres204.pdb
 <br>
 
 ### Binding-Site Identification
+
+![Main cavity calculated with Cavity Plus.](../figures/cavityplus_details.png){ width=95% }
 
 Once the receptor model is finalized, submit the **PDB** file to [Cavity Plus server](http://www.pkumdl.cn:8000/cavityplus/#/computation) to identify candidate binding pockets. The server ranks cavities by **druggability score** and reports **volume**, **surface area**, **centroid coordinates**, and **lining residues**.  
 These details help (a) pick the pocket to target and (b) define the docking box center.
@@ -316,9 +317,6 @@ These details help (a) pick the pocket to target and (b) define the docking box 
 
 > **Tip:** Prefer the top-ranked pocket that matches the known orthosteric site (if applicable).
 
-
-
-![Main cavity calculated with Cavity Plus.](../figures/cavityplus_details.png){ width=95% }
 
 <br>
 

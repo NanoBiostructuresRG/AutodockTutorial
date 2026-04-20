@@ -32,7 +32,18 @@ data/
 # Archivos de trabajo
 *.cif
 *.pdb
+*.fasta
+*.ini
+*.rsr
+*.sch
+*.ali
+*.seq
+*.txt
 
+# Carpetas de trabajo
+**/homology/
+**/prepared/
+**/sequence/
 
 # Resultados y artifacts
 artifacts/
