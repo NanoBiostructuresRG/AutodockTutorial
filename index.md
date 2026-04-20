@@ -37,7 +37,6 @@ This tutorial provides a structured introduction to molecular docking using **Au
 To complete the training and obtain credit, participants are required to engage with the tutorial materials in the prescribed sequence and to complete the two mandatory assessment notebooks:
 
 - [PDB Structure Preparation](https://nbviewer.org/github/NanoBiostructuresRG/AutodockTutorial/blob/main/notebooks/pdb_structure_preparation.ipynb)
-
 - [Receptor Reconstruction](https://nbviewer.org/github/NanoBiostructuresRG/AutodockTutorial/blob/main/notebooks/receptor_reconstruction.ipynb)
 
 
