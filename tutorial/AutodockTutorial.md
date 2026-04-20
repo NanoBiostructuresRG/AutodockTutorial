@@ -14,7 +14,7 @@
 ---
 
 # INTRO
-This notebook is a **hands-on introduction** to molecular docking using AutoDock and to the essential concepts required to perform a basic docking workflow. It is intended for beginners as well as for learners with prior experience who wish to strengthen their understanding of ligand–receptor docking, structure preparation, docking setup, and interpretation of computational results.
+This notebook is a hands-on introduction to molecular docking using [AutoDock](https://autodock-vina.readthedocs.io/en/latest/) and to the essential concepts required to perform a basic docking workflow. It is intended for beginners as well as for learners with prior experience who wish to strengthen their understanding of ligand–receptor docking, structure preparation, docking setup, and interpretation of computational results.
 
 The notebook is divided into three main parts:
 
@@ -47,7 +47,9 @@ Learning works best when you see the **same ideas explained in multiple ways and
 
 # PART 1. Introduction to Molecular Docking
 
-**Molecular docking** is a core method in structure-based drug design (SBDD) for predicting, with a substantial degree of accuracy, the binding pose of small molecules in the active site of a receptor [[1]](https://doi.org/10.1016/j.rechem.2024.101319). It compromises several computational approaches with the goal to fit ligands into multiple receptor states (e.g., active/inactive, co-activator–bound, mutants), to **predict binding poses** and to **estimate affinity** (i.e., binding affinity). Docking returns a ranked list of compounds and highlights key interactions (e.g., anchor residues, H-bonds, π–π, hydrophobic contacts), supporting *binding-mode hypotheses* and ligand prioritization. Results depend on approximations—software [[2]](https://www.eurekaselect.com/article/51070) (e.g., AutoDock Vina/Qvina, MOE, Glide, etc.), parameters (e.g., search box, exhaustiveness, number of poses), and the **scoring function** (e.g., the AutoDock Vina empirical score, MOE's London dG scoring function, and others). Robustness improves when using ensembles of receptor structures (i.e., multiple PDB entries, states, or mutants) and verifying that top best-scoring ligands from each docking run can be pooled and de-duplicated. 
+**Molecular docking** is a core method in structure-based drug design (SBDD) for predicting, with a substantial degree of accuracy, the binding pose of small molecules in the active site of a receptor [[1]](https://doi.org/10.1016/j.rechem.2024.101319). It compromises several computational approaches with the goal to fit ligands into multiple receptor states (e.g., active/inactive, co-activator–bound, mutants), to **predict binding poses** and to **estimate affinity** (i.e., binding affinity). Docking returns a ranked list of compounds and highlights key interactions (e.g., anchor residues, H-bonds, π–π, hydrophobic contacts), supporting *binding-mode hypotheses* and ligand prioritization. 
+
+Results depend on approximations—software [[2]](https://www.eurekaselect.com/article/51070) (e.g., AutoDock Vina, Qvina, MOE, Glide, etc.), parameters (e.g., search box, exhaustiveness, number of poses), and the **scoring function** (e.g., the AutoDock Vina empirical score, MOE's London dG scoring function, and others). Robustness improves when using ensembles of receptor structures (i.e., multiple PDB entries, states, or mutants) and verifying that top best-scoring ligands from each docking run can be pooled and de-duplicated. 
 
 Molecular docking and **virtual screening** are related but differ in scope and purpose. Docking typically refers to evaluating one (or a small set of) ligand–receptor pairs to predict binding pose(s), estimate affinity, and rationalize key contacts. Virtual screening [[3]](https://www.tandfonline.com/doi/full/10.1517/17460441.2010.484460) applies docking (and often other filters) **at scale** to large libraries, ranking compounds to prioritize a small subset for experimental testing. In practice, docking is the *engine* that generates poses and scores; virtual screening is the *workflow* that uses that engine repeatedly—adding library preparation, property/PAINS filters, rescoring or consensus scoring, and enrichment/hit-rate assessment—to identify novel chemotypes.
 
@@ -73,11 +75,7 @@ Before we continue, a brief note on the differences between **AutoDock (AD4)** a
   - **Vina:** Typically faster and multithreaded—good for large screens.
 
 
-> **Note:**   
-> Use **AD4** when you need term-level energy decomposition or to reproduce legacy protocols; use **Vina/QVina** for streamlined, high-throughput docking.
-
-
-In both cases validate the protocol by re-docking ligands into cognate co-crystal structures of **comparable conformational complexity**.
+Use **AD4** when you need term-level energy decomposition or to reproduce legacy protocols; use **Vina/QVina** for streamlined, high-throughput docking. In both cases validate the protocol by re-docking ligands into cognate co-crystal structures of **comparable conformational complexity**.
 
 
 This tutorial focuses on **AutoDock Vina** and related utilities; please ensure they are pre-instaled on your system: 
@@ -93,14 +91,17 @@ This tutorial focuses on **AutoDock Vina** and related utilities; please ensure 
 - **LigPlot+** - Visualization of protein-ligand interactions
 - **Bash** - Shell scripting for automatization of repetitive tasks 
 
+
 > **Note:**  
-> The instructions adopted in this tutorial are based on a working environment running Ubuntu 22.04.4 LTS.   
+> The instructions adopted in this tutorial are based on a working environment running Ubuntu 22.04.4 LTS. 
+> For this tutorial, a dedicated Python environment (e.g., **`bio_env`**) has been prepared with **MODELLER** and the other dependencies required for the **notebooks**.
+
 
 <br>
 
 # PART 2. Protocol
-
-The docking methodology —as we apply it— consists of the following steps: 
+ 
+The docking workflow implemented in this tutorial comprises four main stages:
 
 - **Selection of Structures**
 - **Preparation of Structures**
@@ -108,44 +109,38 @@ The docking methodology —as we apply it— consists of the following steps:
 - **Analysis of Results**
 
 
-Each step is equally important; however, selecting the appropiate structures and parameters is particularly crucial for obtaining reliable results. 
-In this tutorial, we will go through each step using a simple example of one molecule —rosiglitazone (RGZ)— and one receptor —peroxisome proliferator-activated receptor gamma (PPAR-γ). 
+Although each stage contributes critically to the overall reliability of the study, the selection of appropriate structural inputs and methodological parameters is particularly important, as these choices directly condition the interpretability and robustness of the docking results. In this tutorial, each stage will be illustrated using a representative case study consisting of the receptor **peroxisome proliferator-activated receptor gamma (PPAR-γ)** and the ligand **rosiglitazone (RGZ)**.
 
 
 <br>
 
-## 2.1 Selection of Structures
+## 2.1 Selection of Structures 
 
-Before we event think about docking, we must clearly define the **object** and **subject** of the study — in other words, our **research goal** and the **biological system** under investigation. This step is crucial, as the selection of molecular structures must align with the specific aims of the study. 
+The first stage of any docking study is the selection of molecular structures that are mechanistically consistent with the biological question under investigation. This decision must be guided by the functional state of the receptor, the binding mode to be examined, and the level of experimental support available for the ligand of interest. Structural selection is therefore not a preliminary administrative step, but a central component of methodological design, since the validity of the docking experiment depends directly on the relevance of the receptor–ligand system chosen as input.
 
-In this tutorial, for example, our goal is to investigate the agonistic activity on the receptor **PPAR-γ** (the object), given that its activation has been reported to have **therapeutic potential** in regulating metabolic processes involved in adipogenesis, glucose homeostasis, inflammation, and the uptake and storage of fatty acids (the subjects).
+In the present tutorial, the system of interest is **peroxisome proliferator-activated receptor gamma (PPAR-γ)**, and the objective is to examine ligand recognition in the context of **agonist binding**. Because receptor conformation is strongly coupled to functional state, the structure selected for docking must correspond to an experimentally resolved **active-like conformation** compatible with agonist accommodation in the ligand-binding domain. Likewise, the reference ligand should not be chosen arbitrarily, but on the basis of prior experimental evidence supporting its classification as a **PPAR-γ agonist**.
 
-We will be working with the **active conformation** of the human PPAR-γ receptor. Therefore, it is essential to select ligands that have been experimentally validated as **agonists** of PPAR-γ.
-
-Such compounds can be identified by consulting curated chemical databases, for instance, [ChEMBL](https://ebi.ac.uk/chembl/), where bioactivity data from experimental assays are publicly available.
+Accordingly, the structural inputs used in this tutorial are selected from publicly available and experimentally curated sources. The receptor structure is obtained from the **Protein Data Bank (PDB)**, whereas ligand identity and activity annotation can be supported by curated bioactivity resources such as **ChEMBL**, which compile experimental measurements reported in the pharmacological and medicinal chemistry literature. Within this framework, the receptor **PPAR-γ** and the ligand **rosiglitazone (RGZ)** constitute an appropriate model system for illustrating the subsequent stages of docking preparation, execution, and interpretation.
 
 
 <br>
 
 ### Selection of the Receptor
 
-The next step is to select the appropriate molecular structures. In the case of the receptor, the structure should be obtained from **experimentally resolved structural data**, if available, using reliable sources such as the Protein Data Bank [(PDB)](https://www.rcsb.org/). 
+Receptor selection should be based, whenever possible, on **experimentally determined structural data** deposited in curated repositories such as the Protein Data Bank [(PDB)](https://www.rcsb.org/). The use of an experimentally resolved structure provides a direct structural framework for docking and allows the receptor to be evaluated in terms of conformational state, completeness, resolution, and relevance to the binding event under study.
 
-From the **PDB** search interface, we can look for our target protein and refine the results by taxonomy, organism, method of structure determination, resolution, release date, and more.
-
-For this example, we searched for PPAR-γ, applied a filter for Homo sapiens, and sorted the results from highest to lowest resolution. This yielded **479** structures, from which we will choose the most suitable entry based on biological relevance and structural quality.
-
+The identification of an appropriate receptor entry requires a systematic inspection of the available PDB records associated with the target protein. Search results can be refined according to criteria such as **organism**, **experimental method**, **resolution**, **release date**, and the presence of relevant bound ligands or associated biomolecular partners. These filters are useful for reducing the dataset to structures that are both biologically pertinent and technically suitable for docking-oriented preparation.
 
 ![PPARG query in the PDB showing 479 Homo sapiens structures.](../figures/PPARG_query_PDB.png){ width=90% }
 
 
+In the present example, the search was restricted to **human PPAR-γ** structures and the resulting entries were examined in light of both **structural quality** and **functional relevance**. This initial query yielded approximately **480** records, which must then be inspected individually rather than accepted uncritically. Particular attention is required because database searches frequently recover structures corresponding to **co-activator complexes**, **nucleic-acid-associated assemblies**, engineered constructs, or other multimolecular systems that do not necessarily represent the receptor state intended for docking. Receptor selection must therefore be based on the specific biological question, ensuring that the chosen structure corresponds to an appropriate conformational and functional context for ligand binding analysis.
 
 > **Note:**  
 > - The PDB is a public repository that currently hosts over **240,000** three-dimensional structures of biomolecules from a wide range of organisms.
 > - In cases where no experimentally resolved structures are available in the PDB (e.g., X-ray, cryo-EM, or NMR), alternative approaches such as homology modeling or computational prediction (e.g., AlphaFold) must be employed. These procedures, however, fall outside the scope of this tutorial.
 
-
-From here, we must review the results list and inspect candidate structures carefully. Be cautious: search queries often return **co-activators**, **DNA/RNA complexes**, or other assemblies that may not match the intended target.
+<br>
 
 Once a suitable entry is identified, open its record and examine the metadata. You should verify:
 
@@ -157,11 +152,10 @@ Once a suitable entry is identified, open its record and examine the metadata. Y
 - **Sequence features** (mutations, deletions, missing loops)
 - **Geometry/validation** (e.g., acceptable Ramachandran statistics)
 
+
 For this tutorial, we will use a **PPAR-γ** structure in its **active conformation** with the PDB entry [5YCP](https://www.rcsb.org/structure/5YCP). 
 
-On the entry page, select **`Download Files`** → **`Legacy PDB Format`**. Then, download the **`*.pdb`** structure from the PDB. Save the file to your working directory; in this tutorial, it is called **`5YCP.pdb`** (keep it as the raw reference).
-
-Such a file contains the 3D coordinates of the protein, co-crystallized ligands (e.g., small organic molecules), co-activators (e.g., peptides), and other heteroatoms (e.g., ions, solvent).
+On the entry page, select **`Download Files`** → **`Legacy PDB Format`**. Then, download the **`*.pdb`** structure from the PDB. Save the file to your working directory; in this tutorial, it is called **`5YCP.pdb`** (keep it as the raw reference). Such a file contains the 3D coordinates of the protein, co-crystallized ligands (e.g., small organic molecules), co-activators (e.g., peptides), and other heteroatoms (e.g., ions, solvent).
 
 
 > **Note:**  
@@ -194,12 +188,15 @@ We can search **PubChem** using the common name of the compound **rosiglitazone*
 
 ## 2.2 Preparation of Structures
 
-Now that we have our raw structures, we need to prepare them in the correct format and ensuring they have the proper structure for docking.
+Once the raw structural files have been selected, they must be converted into a chemically and structurally consistent representation suitable for docking. This preparation stage involves generating the appropriate file format, removing non-essential structural components, and ensuring that the receptor and ligand are correctly defined for subsequent docking calculations.
 
 
 ### Preparing the Receptor Structure
 
-In **PyMOL**, open the downloaded **`5YCP.pdb`** file from PDB. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms (e.g., ions, solvent). The goal is to produce one files with **only the receptor**. Furthermore, we will prepare another file with **the crystallized agonist**.
+In **PyMOL**, open the downloaded **`5YCP.pdb`** file from PDB. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms such as ions and solvent. The goal is to produce one files with **only the receptor**. Furthermore, we will prepare another file with **the crystallized agonist**.
+
+
+![Raw structure as downloaded from the PDB 6MD4. In the figure below, the receptor is shown in blue, the ligand in green, and the co-crystallized components to be removed in red.](../figures/6MD4_raw.png){ width=70% }
 
 Select the relevant receptor chain (e.g., Chain **A**) and remove everything else. Save the result as **`5YCP_receptor.pdb`**. 
 
@@ -213,15 +210,13 @@ PyMOL > remove sele
 
 Then isolate the ligand (**RGA**, **BRL**, etc) and save it as **`5YCP_ligand.pdb`**.
 
-![Raw structure as downloaded from the PDB 6MD4. In the figure below, the receptor is shown in blue, the ligand in green, and the co-crystallized components to be removed in red.](../figures/6MD4_raw.png){ width=70% }
+If the receptor structure contains **unresolved residues or atoms** that could not be modeled from the experimental electron density, the missing region can be reconstructed by **comparative modeling** using the canonical protein sequence as reference. The first step is therefore to retrieve the canonical sequence from the [UniProt](https://www.uniprot.org/) database.
 
 
+For the present example, the relevant entry corresponds to human PPAR-γ **[P37231-2](https://www.uniprot.org/uniprotkb/P37231/entry)**, from which the canonical sequence is obtained for downstream modeling. 
 
-If the receptor structure contains **unresolved residues/atoms** that could not be refined in the crystallographic study, we will rebuild the receptor by **homology** using the **canonical sequence**. First, retrieve the canonical sequence from the [UniProt](https://www.uniprot.org/) database. 
 
-Search for **human PPAR-γ** and open entry **[P37231-2](https://www.uniprot.org/uniprotkb/P37231/entry)**. In the **Sequences** section, copy the **canonical** sequence for downstream modeling.
-
-CHIMERA is used to open the sequence and copy it to a **`*.ali`** file, as follows.
+The canonical sequence is used together with the experimentally resolved receptor fragment to generate the **PIR (`*.ali`) alignment file** required by **MODELLER**. In this tutorial, the alignment may be prepared either programmatically, as shown in **Notebook: Receptor Reconstruction**, or interactively using [UCSF ChimeraX](https://www.cgl.ucsf.edu/chimerax/), which allows the canonical sequence and the experimental receptor fragment to be opened, aligned, and exported in a format suitable for comparative modeling. In both cases, the purpose is to define the explicit residue correspondence between the template structure and the target sequence prior to model building.
 
 
 > **Note:**  
@@ -232,27 +227,23 @@ CHIMERA is used to open the sequence and copy it to a **`*.ali`** file, as follo
 
 ### Aligning the Canonical Sequence to the Crystal Template
 
-If the crystal structure is incomplete (missing residues/atoms), we will rebuild the receptor by **comparative (homology) modeling** with **MODELLER** using the **canonical UniProt sequence** as the target and the **clean PDB** as the template.
+When the crystallographic receptor structure is incomplete due to unresolved residues or atoms, reconstruction of the missing region requires the establishment of an explicit correspondence between the experimentally resolved template and the full biological reference sequence. This is achieved through **comparative modeling** with **MODELLER**, using the **cleaned crystal structure** as the structural template and the **canonical UniProt sequence** as the target. 
+
+The alignment step is therefore a prerequisite for model generation, since it defines which residues are already supported by experimental structural data and which segments must be inferred during reconstruction. In practical terms, this template–target alignment provides the formal basis for rebuilding unresolved regions while preserving the experimentally determined fold of the receptor.
 
 **Alignment file (`.ali`, PIR format).**  
-To generate an alignment file, you may use the example provided in the `docking/` folder, **`seq_5YCP.ali`**, which contains two entries:
 
-- The **template**, correponding to the crystallographic structure extracted from **`5YCP.pdb`** in Chimera or PyMOL, and  
-- The **target**, corresponding to the **canonical human PPAR-γ** sequence from UniProt (**P37231-2**).
+The template–target correspondence required for comparative modeling is encoded in an **alignment file in PIR format**. In the present example, this file is represented by **`seq_5YCP.ali`** in the `docking/` directory and contains two entries: a **template** corresponding to the experimentally resolved receptor structure derived from **`5YCP.pdb`**, and a **target** corresponding to the **canonical human PPAR-γ sequence** obtained from UniProt (**P37231-2**). Within this representation, both sequences are arranged in an explicitly aligned form so that **MODELLER** can distinguish residues supported by experimental structural data from those that must be reconstructed during model generation. 
 
-Please, note that the **`*.ali`** files follow a highly specific PRI format, in which sequence lines are typically arranged in blocks of **81 characters**.
-
-General conventions you should follow:
-
-- The file uses **PIR-style headers** required by **MODELLER**, with entries formatted as `>P1;identifier`.
-  - The **template** entry typically begins with `structureX:` and includes the **PDB code**, **start and end residue positions**, and **chain identifier**.
-  - The **target** entry begins with `sequence:` and includes the identifier of the target sequence.
-- **Gaps** corresponding to **missing residues** in the template should be represented by **`-`** characters in the alignment.
-- If full-length modeling is unnecessary for the docking study, only the **crystallized region** of the protein should be aligned, for example, the **ligand-binding domain (LBD)** of **PPAR-γ**.
-- Each sequence must end with an asterisk, `*`.
+Because the PIR format follows a strict syntax, the file must preserve the appropriate entry headers, descriptor lines, gap placement, and sequence termination with `*`; sequence lines are conventionally written in fixed-width blocks, commonly **81 characters per line**.
 
 
-> **Tip:** Reading the original PDB article helps you decide which regions are functionally relevant. Crystal structures often lack flexible **loops/termini** (no defined secondary structure), so do not force-model those unless needed.
+![Alignment between the raw structure and our modeled protein.](../figures/6MD4_model_alignment_0.128RMSD.png){ width=55% }
+
+
+
+The preparation of a valid **PIR alignment file** requires adherence to the syntax conventions expected by **MODELLER**, since this file constitutes the formal representation of the template–target relationship used during comparative modeling. Each entry begins with a **PIR-style header** in the form `>P1;identifier`, followed by a descriptor line that specifies the structural or sequence role of the entry. For the **template**, this descriptor typically begins with `structureX:` and includes the relevant structural reference, residue range, and chain identifier, whereas for the **target** it begins with `sequence:` and identifies the sequence to be modeled. Within the aligned sequences, residues absent from the experimental structure must be represented explicitly as **gap characters (`-`)**, allowing unresolved segments of the template to be distinguished from the continuous canonical sequence. When full-length reconstruction is not required for the docking objective, the alignment should be restricted to the **structurally and functionally relevant region** of the receptor, such as the **ligand-binding domain (LBD)** of **PPAR-γ**, rather than extending to flexible or poorly defined terminal regions. Each sequence entry must terminate with an asterisk (`*`), as required by the PIR specification. In this context, inspection of the original structural study is often useful for identifying which unresolved regions are biologically relevant and which correspond only to **flexible loops** or **termini** that need not be reconstructed for docking purposes. the original PDB article helps you decide which regions are functionally relevant.
+
 
 Once **`seq_5YCP.ali`** is ready, run your **MODELLER** script (e.g., **`make_model.py`**) pointing to:
 
@@ -287,12 +278,10 @@ The script will generate one or more **PDB models** for the receptor’s crystal
 
 This step outputs the specified number of models and their scores. Select the **top-scoring** one (e.g., by **DOPE**). 
 
-![Alignment between the raw structure and our modeled protein.](../figures/6MD4_model_alignment_0.128RMSD.png){ width=55% }
 
 You can also open the models in **PyMOL** and align them to the cleaned crystal structure to inspect **RMSD** and visualize differences in the **modeled regions**. In our case, we compared the modeled protein (**pink**) with the cleaned **5YCP** structure (**blue**) and obtained an **RMSD of 0.090 Å**, indicating excellent agreement. The main deviations occur in **loop regions**; notably, the previously missing loop was modeled toward the **orthosteric site**, which could interfere with docking. Keep this in mind when selecting structures. Once satisfied, choose the model for the next steps and proceed with receptor preparation for docking.
 
 The numbering for amino acid should be homogolized with **UNIPROT** using **pdb-tools** as follows:
-
 
 ```bash
 pdb_reres -204 PPARG_model.pdb > PPARG_model_reres204.pdb
@@ -302,45 +291,37 @@ pdb_reres -204 PPARG_model.pdb > PPARG_model_reres204.pdb
 
 ### Binding-Site Identification
 
+Once the receptor model has been finalized, the next step is to identify structurally plausible ligand-binding pockets that can serve as candidates for docking. For this purpose, the receptor **PDB** file may be submitted to the [CavityPlus](http://www.pkumdl.cn:8000/cavityplus/#/computation) server. The server ranks cavities by **druggability score** and reports **volume**, **surface area**, **centroid coordinates**, and **lining residues** and reports geometric and physicochemical descriptors for each predicted pocket. These outputs typically include cavity ranking, **centroid coordinates**, **lining residues**, and quantitative descriptors such as **volume** and **surface area**.
+
+
+Within the docking workflow, this information serves two related purposes. First, it supports the selection of the pocket to be targeted, particularly when multiple cavities are detected on the receptor surface. Second, it provides the spatial parameters required to define the docking search space, especially the coordinates used to position the center of the docking box. In practical terms, the most relevant information to retain from the cavity analysis includes the **pocket identifier**, the **centroid coordinates (x, y, z)**, the **residues lining the cavity**, and, when useful as additional context, the reported **volume** and **surface area**.
+
+
 ![Main cavity calculated with Cavity Plus.](../figures/cavityplus_details.png){ width=95% }
 
-Once the receptor model is finalized, submit the **PDB** file to [Cavity Plus server](http://www.pkumdl.cn:8000/cavityplus/#/computation) to identify candidate binding pockets. The server ranks cavities by **druggability score** and reports **volume**, **surface area**, **centroid coordinates**, and **lining residues**.  
-These details help (a) pick the pocket to target and (b) define the docking box center.
 
-**What to record from CavityPlus**
-
-- Pocket ID (rank)
-- Centroid coordinates (x, y, z)
-- Key residues (for later interaction checks)
-- Pocket volume/surface (optional context)
-
-
-> **Tip:** Prefer the top-ranked pocket that matches the known orthosteric site (if applicable).
-
+Pocket selection should not rely exclusively on cavity ranking. Whenever structural, biochemical, or pharmacological evidence is available, the predicted cavity should be evaluated in the context of the known or expected **orthosteric binding region**, so that the defined docking box corresponds to a biologically relevant ligand-binding environment.
 
 <br>
 
 ### Docking Search Space (Grid Box)
 
-Define the Vina/Qvina search space based on the selected pocket:
+Once the binding pocket has been selected, the docking search space must be defined so that the sampling procedure is restricted to the region of the receptor that is relevant for ligand recognition. In **AutoDock Vina**, this search space is specified by the **center coordinates** of the box and by its **dimensions** along the three Cartesian axes. The box center is typically assigned from the **centroid coordinates** of the selected cavity, whereas the box size is chosen to fully encompass the pocket and its immediate surroundings.
 
-- **Center**: use the CavityPlus pocket centroid 
+In practical terms, the box dimensions should be large enough to include the full binding cavity and permit reasonable ligand reorientation, while avoiding an unnecessarily large volume that would expand the conformational search beyond the region of interest. For this reason, the search space is commonly defined as the predicted pocket volume plus an additional margin sufficient to accommodate ligand motion within the site. An illustrative parameterization is shown below:
+
 ```bash
 --center_x <x> --center_y <y> --center_z <z>
+--size_x 21 --size_y 20 --size_z 16
 ```
 
-- **Size (Å)**: set box edges to encompass the pocket + ~4–6 Å margin *(example values)*
-```bash  
---size_x 21 --size_y 20 --size_z 16  
-```
-
-**Example (placeholder numbers)**
-
-```bash  
+For example:
+```bash
 --center_x 10.2 --center_y 14.7 --center_z 7.9
 --size_x 21 --size_y 20 --size_z 16
 ```
 
+When multiple receptor conformations or receptor states are analyzed in parallel, the same box center and dimensions should be retained only if the binding site geometry remains comparable across structures. Regardless of the final values selected, the center coordinates and box dimensions must be documented explicitly, since these parameters are required for computational reproducibility and for subsequent interpretation of docking poses.
 
 > **Note:**  
 > - Keep the box as tight as practical around the binding site to reduce false positives.
