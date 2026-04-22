@@ -14,7 +14,7 @@
 ---
 
 # INTRO
-This notebook is a hands-on introduction to molecular docking using [AutoDock](https://autodock-vina.readthedocs.io/en/latest/) and to the essential concepts required to perform a basic docking workflow. It is intended for beginners as well as for learners with prior experience who wish to strengthen their understanding of ligand–receptor docking, structure preparation, docking setup, and interpretation of computational results.
+This notebook is a hands-on introduction to molecular docking using [AutoDock Vina](https://autodock-vina.readthedocs.io/en/latest/) and to the essential concepts required to perform a basic docking workflow. It is intended for beginners as well as for learners with prior experience who wish to strengthen their understanding of ligand–receptor docking, structure preparation, docking setup, and interpretation of computational results.
 
 The notebook is divided into three main parts:
 
@@ -37,7 +37,7 @@ The goal of this tutorial is not to present completely new material, but to orga
 You are encouraged to complement this tutorial with other resources, such as:
 
 - The official [AutoDock Vina documentation](https://autodock-vina.readthedocs.io/)
-- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/), [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/), etc.
+- Free course notes, books, and lecture materials [Vina manual](https://vina.scripps.edu/), [AutoDock Vina repository](https://github.com/ccsb-scripps/AutoDock-Vina/), [Protocols](https://pmc.ncbi.nlm.nih.gov/articles/PMC4669947/), etc.
 - Online tutorials [jRicciL](https://jriccil.github.io/Taller_Simulacion_Molecular/docking_con_adt4.html)
 
 Learning works best when you see the **same ideas explained in multiple ways and from multiple sources**.
@@ -81,23 +81,41 @@ Use **AD4** when you need term-level energy decomposition or to reproduce legacy
 This tutorial focuses on **AutoDock Vina** and related utilities; please ensure they are pre-instaled on your system: 
 
 - **Python** - Scripting and process automatization
-- **Pymol** - Graphic visualization of molecular structures
-- **Chimera** - Molecular visualitazion and docking preparation
-- **Open Babel** - Conversion between molecular structure formats
-- **Modeller** - Homology modeling of the protein structures
-- **AutoDock Vina** — Molecular docking engine 
-- **Qvina** - Molecular docking engine (AutoDock Vina derivative)
-- **CavityPlus** - Identification of binding pockets and cavities 
-- **LigPlot+** - Visualization of protein-ligand interactions
-- **Bash** - Shell scripting for automatization of repetitive tasks 
+- **Bash** - Shell scripting for automatization of repetitive tasks
+- **[RDKit](https://www.rdkit.org/)** - Cheminformatics toolkit for ligand preparation and analysis 
+- **[PyMOL](https://pymol.org/)** - Graphic visualization of molecular structures
+- **[ChimeraX](https://www.cgl.ucsf.edu/chimerax/)** - Molecular visualization and docking preparation
+- **[Open Babel](https://github.com/openbabel/openbabel)** - Conversion between molecular structure formats
+- **[MODELLER](https://salilab.org/modeller/)** - Homology modeling of the protein structures
+- **[AutoDock Vina](https://vina.scripps.edu/)** — Molecular docking engine 
+- **[Qvina](https://qvina.github.io/)** - Molecular docking engine (AutoDock Vina derivative)
+- **[Meeko](https://github.com/forlilab/Meeko)** - Preparing input files for molecular docking
+- **[CavityPlus](http://www.pkumdl.cn:8000/cavityplus/#/)** - Identification of binding pockets and cavities 
+- **[LigPlot+](https://www.ebi.ac.uk/thornton-srv/software/LigPlus/download.html)** - Visualization of protein-ligand interactions
+
+
+To set up the workspace, create a dedicated Python environment named **`bio_env`**
+
+```bash
+conda create -n bio_env python=3.10
+```
+<br>
+
+Once created, activate the environment: 
+
+```bash
+conda activate bio_env
+```
+<br>
+
+This environment will house MODELLER, Meeko, and all other dependencies required to run the **notebooks**.
 
 
 > **Note:**  
-> The instructions adopted in this tutorial are based on a working environment running Ubuntu 22.04.4 LTS. 
-> For this tutorial, a dedicated Python environment (e.g., **`bio_env`**) has been prepared with **MODELLER** and the other dependencies required for the **notebooks**.
-
+> The instructions in this tutorial are designed for an environment running **Ubuntu 22.04.4 LTS** with **Python 3.10.**
 
 <br>
+
 
 # PART 2. Protocol
  
@@ -167,11 +185,11 @@ On the entry page, select **`Download Files`** → **`Legacy PDB Format`**. Then
 
 ### Selection of the Ligand
 
-Here we will work with a single ligand: **RGZ**. We need to obtain its 3D structure. There are several common molecular representations—**SMILES**, **InChI**, **SDF** (Structure Data File), **PDB**, **MOL2**, etc. You may use whichever format best fits your workflow; however, for molecular docking, starting from an **`*.sdf`** file is often more reliable and tends to introduce fewer errors.
+Here we will work with a single ligand. First, we need to obtain its 3D structure. There are several common molecular representations—**SMILES**, **InChI**, **SDF** (Structure Data File), **PDB**, **MOL2**, etc. You may use whichever format best fits your workflow; however, for molecular docking, starting from an **`*.sdf`** file is often more reliable and tends to introduce fewer errors.
 
 A practical way to retrieve curated **`*.sdf`** files is through [PubChem](https://pubchem.ncbi.nlm.nih.gov), which is a large public database containing information on **over 100 million** chemical substances, typically including structural data, physicochemical properties, vendor information, bioassay results, and more.
 
-We can search **PubChem** using the common name of the compound **rosiglitazone** (i.e., **RGZ**) and then carefully select the corresponding entry. In this case, the entry for **RGZ** is **[PubChem CID 77999](https://pubchem.ncbi.nlm.nih.gov/compound/77999)**. Navigate to the **Structure** section and locate the adequate **`3D Conformer`** section → **`DOWNLOAD COORDINATES`**. Then, save the **`*.sdf`** file in your working directory. For this tutorial, it was called **`rgz.sdf`**.
+We can search **PubChem** using the common name of the compound, such as **rosiglitazone** (**RGZ**), and then carefully select the corresponding entry. In this case, the entry for **RGZ** is **[PubChem CID 77999](https://pubchem.ncbi.nlm.nih.gov/compound/77999)**. Navigate to the **Structure** section and locate the adequate **`3D Conformer`** section → **`DOWNLOAD COORDINATES`**. Then, save the **`*.sdf`** file in your working directory. For this tutorial, it was called **`rgz.sdf`**.
 
 
 
@@ -179,8 +197,8 @@ We can search **PubChem** using the common name of the compound **rosiglitazone*
 
 
 > **Note:**  
-> - In this example, we will manually search for the structure of rosiglitazone (i.e., **`rgz.sdf`**). For cases involving a large list of ligands, you can use the **PubChem API** to build a Python script that automatically fetches SDF files and associated metadata.
-> - To verify correct atomic connectivity, the **`rgz.sdf`** file can be opened using a graphical viewer such as **PyMOL** or **UCSF Chimera** .
+> - In this example, we will manually search for the structure of **RGZ**. For cases involving a large list of ligands, you can use the **PubChem API** to build a Python script that automatically fetches SDF files and associated metadata.
+> - To verify correct atomic connectivity for the **`rgz.sdf`** file, we use a graphical viewer such as **PyMOL** or **UCSF Chimera**. 
 > - For highly flexible molecules, a **3D** conformer may not be available in PubChem; in that case, use the **2D** record instead.
 
 
@@ -191,7 +209,213 @@ We can search **PubChem** using the common name of the compound **rosiglitazone*
 Once the raw structural files have been selected, they must be converted into a chemically and structurally consistent representation suitable for docking. This preparation stage involves generating the appropriate file format, removing non-essential structural components, and ensuring that the receptor and ligand are correctly defined for subsequent docking calculations.
 
 
-### Preparing the Receptor Structure
+### 2.2.1 Ligand Preparation for Docking
+
+Ligand preparation is the foundational process of generating input files for molecular docking calculations and virtual screening campaigns. AutoDock Vina requires these input files to be provided in the **PDBQT format**, and this can be achieved through two primary methodologies.
+
+The first, and more traditional path, involves obtaining a pre-generated 3D structure in **SDF format** (**`*.sdf`**) from a repository like PubChem. This structure is then processed using **Open Babel** to convert it to a **PDB** file (**`*.pdb`**) while defining the protonation state at a target pH (e.g., 7.4). This intermediate file is subsequently subjected to energy minimization using `obminimize` to relax its geometry. Finally, the minimized structure is converted to the final **PDBQT** (**`*.pdbqt`**) file, ready for docking.
+
+The second path utilizes a **SMILES string** to computationally generate a 3D conformer. This conformer, saved as an SDF file, is then directly transformed into the **PDBQT** format using **Meeko**. Unlike the Open Babel route, Meeko focuses on accurate parametrization and the preservation of molecular topology (bond orders) by embedding SMILES metadata directly into the output file, ensuring the molecule is correctly perceived by downstream analysis tools.
+
+
+**Open Babel Workflow**   
+
+This workflow requires [Open Babel](https://openbabel.org), which should be installed in a dedicated Python environment (i.e., **`*bio_env`**). First, activate the environment from the terminal:
+
+```bash  
+conda activate bio_env
+```
+<br>
+
+
+#### Conversion to PDB.
+
+Second, we use the comand `babel` to convert the **SDF** file to **PDB**, ensuring that all hydrogen atoms are added to satisfy valences:
+
+```bash  
+babel rgz.sdf -opdb -O rgz.pdb -h
+```
+
+<br>
+
+> **Note:**  
+> Always visually inspect the output `.pdb` file in a molecular viewer to verify that the connectivity and protonation states are correct.
+
+
+#### Protonation.
+
+To ensure the simulation reflects physiological conditions, the conversion from **SDF** to **PDB** must account for the ionization states of the functional groups. Instead of simply adding neutral hydrogens, we use the `-p` flag to adjust the protonation state to a specific pH (typically **7.4**).
+
+
+```bash
+babel rgz.sdf -opdb -O rgz.pdb -p 7.4
+```
+
+<br>
+
+Using `-p 7.4` is superior to the standard `-h` flag because it uses $pK_a$ models to determine if groups like amines should be protonated (positively charged) or carboxylic acids should be deprotonated (negatively charged). Since the receptor has already been prepared at pH 7.4, this ensures **electrostatic complementarity** between the ligand and the protein binding site.
+
+<br>
+
+#### Energy Minimization.
+
+Once the structure is verified, use `obminimize` to perform an energy minimization. While Open Babel supports several force fields (GAFF, MMFF94, MMFF94S, Ghemical, and UFF), MMFF94 or GAFF typically yield the most reliable results for small organic molecules.
+
+For flexible molecules, we recommend a high number of steps (e.g., 20,000) to ensure the structure reaches a local minimum:
+
+```bash
+obminimize -n 20000 -ff MMFF94 rgz.pdb > rgz_min.pdb
+```
+
+<br>
+
+Again, we should visually inspect the output to ensure the structure has the correct connectivity and valences.
+
+<br>
+
+#### Generation of the PDBQT file.
+
+The final step is converting the minimized structure into the `.pdbqt` format required by AutoDock Vina:
+
+```bash  
+babel rgz_min.pdb -opdbqt -O rgz.pdbqt
+```
+
+<br>
+
+![Visual representation of improper ligand atom connectivity in the converted .pdbqt files.](../figures/pdbqt_bad_connectivity.png){ width=70% }
+
+<br>
+
+#### Atom Count Reduction in PDBQT Conversion.
+
+When converting the ligand structure from PDB to PDBQT, it is normal and expected to observe a decrease in the total atom count. This happens because Open Babel automatically applies the **United-Atom model** during PDBQT generation for AutoDock. 
+
+In this process:  
+
+- **Non-polar hydrogens** (those bonded to carbon atoms) are **removed as explicit atoms**
+- Their partial charges and volumes are mathematically **merged into the parent heavy atom**
+- **Polar hydrogens** (those attached to heteroatoms like oxygen, nitrogen, or sulfur) are **preserved as explicit atoms**, as they are essential for calculating hydrogen bond interactions during docking
+
+For example, the reduction from **24 to 17 atoms** confirms that the non-polar hydrogens have been merged, leaving a streamlined structure optimized for the AutoDock Vina scoring function. This significantly improves computational efficiency without losing critical chemical information required for accurate docking.
+
+According to AutoDock documentation, the PDBQT format requires that nonpolar hydrogens be removed and their charges fused to the carbons. Open Babel automatically implements this specification when writing PDBQT files without the `-h flag`.
+
+<br>
+
+#### Understanding the PDBQT format.
+
+In a standard [PDBQT file](https://userguide.mdanalysis.org), the structure follows a United-Atom model, meaning that:
+
+- Polar Hydrogens: (Attached to O, N, or S) remain **explicit** as they are essential for calculating hydrogen bonds.
+- Non-Polar Hydrogens: (Attached to C) are merged into the heavy atom. They become typically **implicit**, and their partial charges are added to the carbon atom they were attached to.
+
+
+Since some molecular viewers may not render PDBQT files correctly (often missing bonds or failing to show implicit atoms), you can use the following Python script to inspect the atomic content and charges of your final file:
+
+
+```bash  
+from pathlib import Path
+
+# Adjust this path to match your ligand's PDBQT file location
+pdbqt_path = Path(r"C:\..\..\docking\sdf\my_example.pdbqt")
+
+atom_lines = []
+hydrogen_lines = []
+
+with open(pdbqt_path, "r", encoding="utf-8") as fh:
+    for line in fh:
+        if line.startswith(("ATOM", "HETATM")):
+            atom_lines.append(line.rstrip())
+            atom_name = line[12:16].strip()
+            # PDBQT may store element in columns 77-78
+            atom_type = line[76:77].strip() if len(line) >= 78 else ""
+            if atom_name.startswith("H") or atom_type == "H" or atom_type == "HD":
+                hydrogen_lines.append(line.rstrip())
+
+print(f"Total ATOM/HETATM lines: {len(atom_lines)}")
+print(f"Explicit hydrogen atoms: {len(hydrogen_lines)}")
+
+print("\nFirst ATOM/HETATM records:")
+for line in atom_lines[:10]:
+    print(line)
+
+if hydrogen_lines:
+  print("\nExplicit hydrogen records (polar hydrogens only):")
+  for line in hydrogen_lines:
+    print(line)
+else:
+  print("\nNo explicit hydrogen records found (non-polar hydrogens are implicit).")
+
+```
+
+<br>
+
+#### Troubleshooting Connectivity Issues.
+
+It is critical to visually inspect the files at each stage. Occasionally, you may encounter connectivity distortions, such as atoms being pulled too far apart or bonds overlapping unnaturally.
+
+If the structure appears warped (as seen in the Figure 3), the docking simulation will fail or produce biologically irrelevant results. This is usually caused by:
+
+- Force Field Incompatibility: The chosen force field might not have the proper parameters for a specific functional group in your ligand.
+- Conversion Artifacts: Errors during the translation from the 2D spatial data of an SDF to a 3D PDB.
+
+If changing the force field (e.g., from `MMFF94` to `GAFF`) does not resolve the distortion, you can use the `-gen3d flag`. This command tells Open Babel to generate fresh 3D coordinates, perform a quick internal conformer search, and set up the correct geometry before the formal minimization begins:
+
+```bash  
+obminimize -n 20000 -gen3d -ff MMFF94 rgz.pdb > rgz_min.pdb
+```
+
+<br>
+
+
+**Advanced Ligand Preparation using Meeko**    
+
+While tools like Open Babel are versatile converters, the workflow utilizing [Meeko](https://github.com/forlilab/Meeko) is specifically engineered to bridge the gap between docking and downstream chemical analysis. 
+
+```bash  
+mk_prepare_ligand.py -i rgz.sdf -o rgz_meeko.pdbqt
+```
+
+<br>
+
+Its implementation introduces two fundamental shifts in ligand preparation:
+
+#### Pre-Processing Requirements.
+
+Meeko is strictly a **parametrization tool**, not a modeling engine. Unlike the Open Babel route demonstrated earlier, it does not perform energy minimization or dynamic reprotonation. It operates under the assumption that the input SDF already contains:
+
+- **A realistic 3D conformation:** The geometry must be pre-optimized (e.g., via `obminimize` or sourced from a 3D-refined database like PubChem).
+- **The correct protonation state:** The user must ensure the input reflects the desired ionization for physiological pH (7.4), as Meeko will perceive and preserve the explicit hydrogens provided without performing further $pK_a$ adjustments.
+
+<br>
+
+#### Preservation of Molecular Topology.
+
+The primary technical advantage of Meeko is how it handles the limitations of the PDBQT format, which traditionally does not store bond orders. To prevent information loss, Meeko embeds a "topology map" within the `REMARK` lines of the PDBQT file, including:
+
+- **SMILES string:** The canonical representation of the original molecule.
+- **Index mapping:** A dictionary relating PDBQT atoms back to the SMILES string.
+
+
+This allows for seamless **interoperability**; after docking, tools like RDKit can reconstruct the poses with their original bond orders, making results significantly more reliable for virtual screening analysis.
+
+<br>
+
+#### Implications:
+
+- **High Fidelity:** Avoids errors in bond order inference during post-docking analysis by using embedded metadata.
+- **Accurate Atom Typing:** Leveraging RDKit for chemical perception, Meeko provides superior atom-typing (e.g., correctly assigning aromatic sulfur as `SA` rather than a generic `S` atom) compared to more generic conversion tools.
+- **Traceability:** The embedded SMILES string allows for the unambiguous identification of the chemical entity corresponding to a docking pose.
+
+
+> **Note:** 
+> Meeko ensures that the molecule you analyze *after* docking is chemically identical to the one you started with, provided you take responsibility for the initial 3D geometry and protonation.
+
+<br>
+
+
+### 2.2.2 Preparing the Receptor Structure
 
 In **PyMOL**, open the downloaded **`5YCP.pdb`** file from PDB. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms such as ions and solvent. The goal is to produce one files with **only the receptor**. Furthermore, we will prepare another file with **the crystallized agonist**.
 
@@ -225,7 +449,7 @@ The canonical sequence is used together with the experimentally resolved recepto
 
 <br>
 
-### Aligning the Canonical Sequence to the Crystal Template
+### 2.2.3 Aligning the Canonical Sequence to the Crystal Template
 
 When the crystallographic receptor structure is incomplete due to unresolved residues or atoms, reconstruction of the missing region requires the establishment of an explicit correspondence between the experimentally resolved template and the full biological reference sequence. This is achieved through **comparative modeling** with **MODELLER**, using the **cleaned crystal structure** as the structural template and the **canonical UniProt sequence** as the target. 
 
@@ -289,7 +513,7 @@ pdb_reres -204 PPARG_model.pdb > PPARG_model_reres204.pdb
 
 <br>
 
-### Binding-Site Identification
+### 2.2.4 Binding-Site Identification
 
 Once the receptor model has been finalized, the next step is to identify structurally plausible ligand-binding pockets that can serve as candidates for docking. For this purpose, the receptor **PDB** file may be submitted to the [CavityPlus](http://www.pkumdl.cn:8000/cavityplus/#/computation) server. The server ranks cavities by **druggability score** and reports **volume**, **surface area**, **centroid coordinates**, and **lining residues** and reports geometric and physicochemical descriptors for each predicted pocket. These outputs typically include cavity ranking, **centroid coordinates**, **lining residues**, and quantitative descriptors such as **volume** and **surface area**.
 
@@ -304,7 +528,7 @@ Pocket selection should not rely exclusively on cavity ranking. Whenever structu
 
 <br>
 
-### Docking Search Space (Grid Box)
+### 2.2.5 Docking Search Space (Grid Box)
 
 Once the binding pocket has been selected, the docking search space must be defined so that the sampling procedure is restricted to the region of the receptor that is relevant for ligand recognition. In **AutoDock Vina**, this search space is specified by the **center coordinates** of the box and by its **dimensions** along the three Cartesian axes. The box center is typically assigned from the **centroid coordinates** of the selected cavity, whereas the box size is chosen to fully encompass the pocket and its immediate surroundings.
 
@@ -331,45 +555,6 @@ When multiple receptor conformations or receptor states are analyzed in parallel
 
 <br>
 
-### Preparing the Ligand Structure
-
-To prepare the ligand, the **`*.sdf`** file must first be converted to **`*.pdb`**, followed by an energy minimization step, and then converted to **`*.pdbqt`** for docking. This procedure requires the use of Babel, which is installed in a separate environment named **`*py2`**. Accordingly, before running Babel, this environment must be activated from the terminal with the following command:
-
-
-```bash  
-conda activate py2
-```
-
-
-Now, we can use Babel to convert our SDF file to PDB, ensuring that the structure has hydrogens:
-
-```bash  
-babel rgz.sdf -opdb -O rgz.pdb -h
-```
-
-We should visually inspect the output .pdb file to see that the connectivity and hydrogens are correct. Once we are sure that everything looks good now we will use obminimize to perform an energetic minimization of the structure using a force field. There are 5 possible force fields: GAFF, MMFF94, MMFF94S, Ghemical, and UFF, but I have found best results using MMFF94 (or GAFF). The number of steps of minimization also needs to be specified, 5,000 could be a good start for tests, but I like to do 20,000 steps to ensure enough steps to achieve a minimum, specially for flexible molecules. To do the minimization write in the terminal: 
-
-```bash  
-obminimize -n 20000 -ff MMFF94 rgz.pdb > rgz_min.pdb
-```
-
-Again, we should visually inspect the output to ensure the structure has the correct connectivity and valences. Finally, we need to convert our minimized .pdb structure into the expected .pdbqt file for docking with Autodock Vina. We will write in the terminal the following command: 
-
-```bash  
-babel rgz_min.pdb -opdbqt -O rgz.pdbqt
-```
-
-
-![Bad connectivity in the converted .pdbqt file.](../figures/pdbqt_bad_connectivity.png){ width=70% }
-
-Before moving on we should (again) visually inspect the structure. In the .pdbqt files the non-polar hydrogens are not explicit, thus we will only see the hydrogens connected to non-carbon atoms. It is important to visually inspect the files, as sometimes we can see connectivity issues such as the example in Figure 5 (down). In this case, the structure of the ligand is not correct, and it will not be able to dock properly. This could be due to a problem with the force field used for minimization, or it could be due to a problem with the conversion to .pdbqt. When seeing this, we should try to change the force field on the minimization step. If that does not work then we can add the -gen3d argument to the obminimize line
-
-
-```bash  
-obminimize -n 20000 -gen3d -ff MMFF94 rgz.pdb > rgz_min.pdb
-```
-
-<br>
 
 ## 2.3 Docking Setup and Execution
 

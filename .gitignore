@@ -41,9 +41,13 @@ data/
 *.txt
 
 # Carpetas de trabajo
+**/cifs/
+**/config/
 **/homology/
 **/prepared/
+**/sdf/
 **/sequence/
+
 
 # Resultados y artifacts
 artifacts/
