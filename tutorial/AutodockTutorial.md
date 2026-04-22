@@ -82,14 +82,14 @@ This tutorial focuses on **AutoDock Vina** and related utilities; please ensure 
 
 - **Python** - Scripting and process automatization
 - **Bash** - Shell scripting for automatization of repetitive tasks
+- **[Open Babel](https://github.com/openbabel/openbabel)** - Conversion between molecular structure formats and ligand preparation
+- **[Meeko](https://github.com/forlilab/Meeko)** - Preparing input files for molecular docking
+- **[PyMOL](https://pymol.org/)** - Graphic visualization of molecular structures and docking results
 - **[RDKit](https://www.rdkit.org/)** - Cheminformatics toolkit for ligand preparation and analysis 
-- **[PyMOL](https://pymol.org/)** - Graphic visualization of molecular structures
 - **[ChimeraX](https://www.cgl.ucsf.edu/chimerax/)** - Molecular visualization and docking preparation
-- **[Open Babel](https://github.com/openbabel/openbabel)** - Conversion between molecular structure formats
 - **[MODELLER](https://salilab.org/modeller/)** - Homology modeling of the protein structures
 - **[AutoDock Vina](https://vina.scripps.edu/)** — Molecular docking engine 
 - **[Qvina](https://qvina.github.io/)** - Molecular docking engine (AutoDock Vina derivative)
-- **[Meeko](https://github.com/forlilab/Meeko)** - Preparing input files for molecular docking
 - **[CavityPlus](http://www.pkumdl.cn:8000/cavityplus/#/)** - Identification of binding pockets and cavities 
 - **[LigPlot+](https://www.ebi.ac.uk/thornton-srv/software/LigPlus/download.html)** - Visualization of protein-ligand interactions
 
@@ -239,8 +239,10 @@ babel rgz.sdf -opdb -O rgz.pdb -h
 <br>
 
 > **Note:**  
-> Always visually inspect the output `.pdb` file in a molecular viewer to verify that the connectivity and protonation states are correct.
+> It is a best practice to visually inspect the output `.pdb` file in a molecular viewer to confirm that the connectivity and protonation states are correct. Tools like [PyMOL](https://pymol.org/) are ideal for this verification step.
 
+
+<br>
 
 #### Protonation.
 
@@ -371,17 +373,17 @@ obminimize -n 20000 -gen3d -ff MMFF94 rgz.pdb > rgz_min.pdb
 
 **Advanced Ligand Preparation using Meeko**    
 
-While tools like Open Babel are versatile converters, the workflow utilizing [Meeko](https://github.com/forlilab/Meeko) is specifically engineered to bridge the gap between docking and downstream chemical analysis. 
+[Meeko](https://github.com/forlilab/Meeko) utilizes the **RDKit** chemical perception engine to automate ligand parametrization for AutoDock Vina. This workflow generates PDBQT files directly from 3D SDF inputs, thereby omitting the requirement for an intermediate PDB format.
 
 ```bash  
 mk_prepare_ligand.py -i rgz.sdf -o rgz_meeko.pdbqt
 ```
 
-<br>
+<br> 
 
 Its implementation introduces two fundamental shifts in ligand preparation:
 
-#### Pre-Processing Requirements.
+#### 1. Pre-Processing Requirements.
 
 Meeko is strictly a **parametrization tool**, not a modeling engine. Unlike the Open Babel route demonstrated earlier, it does not perform energy minimization or dynamic reprotonation. It operates under the assumption that the input SDF already contains:
 
@@ -390,15 +392,15 @@ Meeko is strictly a **parametrization tool**, not a modeling engine. Unlike the 
 
 <br>
 
-#### Preservation of Molecular Topology.
+#### 2. Preservation of Molecular Topology.  
 
-The primary technical advantage of Meeko is how it handles the limitations of the PDBQT format, which traditionally does not store bond orders. To prevent information loss, Meeko embeds a "topology map" within the `REMARK` lines of the PDBQT file, including:
+The direct SDF-to-PDBQT route preserves molecular topology, including bond orders and connectivity, which are not explicitly defined in the standard PDB format. The script also identifies rotatable bonds, merges non-polar hydrogens (United-Atom model), and assigns atom types compatible with the AutoDock Vina force field. To prevent information loss, Meeko embeds a "topology map" within the `REMARK` lines of the PDBQT file, including:
 
 - **SMILES string:** The canonical representation of the original molecule.
 - **Index mapping:** A dictionary relating PDBQT atoms back to the SMILES string.
 
 
-This allows for seamless **interoperability**; after docking, tools like RDKit can reconstruct the poses with their original bond orders, making results significantly more reliable for virtual screening analysis.
+Furthermore, Meeko embeds metadata—such as SMILES strings and atom index maps—within the REMARK lines of the resulting PDBQT file. This technical feature enables the reconstruction of docking poses back into RDKit molecules, ensuring data consistency for downstream chemical analysis. This allows for seamless **interoperability**; after docking, tools like RDKit can reconstruct the poses with their original bond orders, making results significantly more reliable for virtual screening analysis.
 
 <br>
 
@@ -414,6 +416,28 @@ This allows for seamless **interoperability**; after docking, tools like RDKit c
 
 <br>
 
+
+However, Meeko is best suited for processing **SMILES** (Simplified Molecular Input Line Entry Specification) strings retrieved from reliable chemical databases such as [PubChem](https://pubchem.ncbi.nlm.nih.gov/) or [DrugBank](https://www.drugbank.ca/). For virtual screening campaigns, ligands can be prepared in batch mode using a **`.smi`** file, which contains one or more SMILES strings representing chemical structures. These lists are typically obtained by searching repositories for specific criteria—such as pharmacological activity, molecular weight, or chemical similarity—and exporting the results as a text file.
+
+The preparation process begins by converting the SMILES list into a multi-molecule 3D SDF file using the following command:
+
+```bash
+scrub.py $smi_file -o mols.sdf
+```
+
+This script can be configured with options to control the generation of isomers—including tautomers and acid/base conjugates—and the number of conformers per entry. At the end of the execution, the standard output reports the total number of isomers successfully written to the multi-molecule SDF file.
+
+To generate the final docking files, process the `mols.sdf` file using `mk_prepare_ligand.py` with the `--multimol_prefix` flag:
+
+```bash
+mk_prepare_ligand.py -i mols.sdf --multimol_prefix mols_pdbqt
+```
+
+<br>
+
+The `--multimol_prefix` option directs the software to create a specific directory (in this case, mols_pdbqt) to store the individual PDBQT files for each ligand, ensuring an organized workspace for the subsequent docking simulation.
+
+<br>
 
 ### 2.2.2 Preparing the Receptor Structure
 
