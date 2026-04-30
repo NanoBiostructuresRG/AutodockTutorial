@@ -1,5 +1,5 @@
 # AutoDock Tutorial
-**Version 1.0.0 - February, 2026. Monterrey**
+**Version 1.0 - February, 2026. Monterrey**
 
 **Authors:** 
 [Ana C. Murrieta ](https://orcid.org/0000-0002-7619-8880) and [Flavio F. Contreras-Torres](https://orcid.org/0000-0003-2375-131X). Tecnológico de Monterrey.
@@ -101,12 +101,6 @@ conda create -n bio_env python=3.10
 ```
 <br>
 
-Once created, activate the environment: 
-
-```bash
-conda activate bio_env
-```
-<br>
 
 This environment will house MODELLER, Meeko, and all other dependencies required to run the **notebooks**.
 
@@ -138,7 +132,7 @@ The first stage of any docking study is the selection of molecular structures th
 
 In the present tutorial, the system of interest is **peroxisome proliferator-activated receptor gamma (PPAR-γ)**, and the objective is to examine ligand recognition in the context of **agonist binding**. Because receptor conformation is strongly coupled to functional state, the structure selected for docking must correspond to an experimentally resolved **active-like conformation** compatible with agonist accommodation in the ligand-binding domain. Likewise, the reference ligand should not be chosen arbitrarily, but on the basis of prior experimental evidence supporting its classification as a **PPAR-γ agonist**.
 
-Accordingly, the structural inputs used in this tutorial are selected from publicly available and experimentally curated sources. The receptor structure is obtained from the **Protein Data Bank (PDB)**, whereas ligand identity and activity annotation can be supported by curated bioactivity resources such as **ChEMBL**, which compile experimental measurements reported in the pharmacological and medicinal chemistry literature. Within this framework, the receptor **PPAR-γ** and the ligand **rosiglitazone (RGZ)** constitute an appropriate model system for illustrating the subsequent stages of docking preparation, execution, and interpretation.
+Accordingly, the structural inputs used in this tutorial are selected from publicly available and experimentally curated sources. The receptor structure is obtained from the **Protein Data Bank (PDB)**, whereas ligand identity and activity annotation can be supported by curated bioactivity resources such as **ChEMBL**, which compile experimental measurements reported in the pharmacological and medicinal chemistry literature. Within this framework, the receptor **PPAR-γ** and the ligand **RGZ** constitute an appropriate model system for illustrating the subsequent stages of docking preparation, execution, and interpretation.
 
 
 <br>
@@ -149,7 +143,7 @@ Receptor selection should be based, whenever possible, on **experimentally deter
 
 The identification of an appropriate receptor entry requires a systematic inspection of the available PDB records associated with the target protein. Search results can be refined according to criteria such as **organism**, **experimental method**, **resolution**, **release date**, and the presence of relevant bound ligands or associated biomolecular partners. These filters are useful for reducing the dataset to structures that are both biologically pertinent and technically suitable for docking-oriented preparation.
 
-![PPARG query in the PDB showing 479 Homo sapiens structures.](../figures/PPARG_query_PDB.png){ width=90% }
+![PPARG query in the PDB showing 479 Homo sapiens structures.](../figures/PPARG_query_PDB.png){ width=75% }
 
 
 In the present example, the search was restricted to **human PPAR-γ** structures and the resulting entries were examined in light of both **structural quality** and **functional relevance**. This initial query yielded approximately **480** records, which must then be inspected individually rather than accepted uncritically. Particular attention is required because database searches frequently recover structures corresponding to **co-activator complexes**, **nucleic-acid-associated assemblies**, engineered constructs, or other multimolecular systems that do not necessarily represent the receptor state intended for docking. Receptor selection must therefore be based on the specific biological question, ensuring that the chosen structure corresponds to an appropriate conformational and functional context for ligand binding analysis.
@@ -193,7 +187,7 @@ We can search **PubChem** using the common name of the compound, such as **rosig
 
 
 
-![3D conformer download of Rosiglitazone from the PubChem server.](../figures/pubchem_rgz_sdf_download.png){ width=90% }
+![3D conformer download of Rosiglitazone from the PubChem server.](../figures/pubchem_rgz_sdf_download.png){ width=75% }
 
 
 > **Note:**  
@@ -285,7 +279,7 @@ babel rgz_min.pdb -opdbqt -O rgz.pdbqt
 
 <br>
 
-![Visual representation of improper ligand atom connectivity in the converted .pdbqt files.](../figures/pdbqt_bad_connectivity.png){ width=70% }
+![Visual representation of improper ligand atom connectivity in the converted .pdbqt files.](../figures/pdbqt_bad_connectivity.png){ width=60% }
 
 <br>
 
@@ -383,7 +377,7 @@ mk_prepare_ligand.py -i rgz.sdf -o rgz_meeko.pdbqt
 
 Its implementation introduces two fundamental shifts in ligand preparation:
 
-#### 1. Pre-Processing Requirements.
+#### Pre-Processing Requirements.
 
 Meeko is strictly a **parametrization tool**, not a modeling engine. Unlike the Open Babel route demonstrated earlier, it does not perform energy minimization or dynamic reprotonation. It operates under the assumption that the input SDF already contains:
 
@@ -392,7 +386,7 @@ Meeko is strictly a **parametrization tool**, not a modeling engine. Unlike the 
 
 <br>
 
-#### 2. Preservation of Molecular Topology.  
+#### Preservation of Molecular Topology.  
 
 The direct SDF-to-PDBQT route preserves molecular topology, including bond orders and connectivity, which are not explicitly defined in the standard PDB format. The script also identifies rotatable bonds, merges non-polar hydrogens (United-Atom model), and assigns atom types compatible with the AutoDock Vina force field. To prevent information loss, Meeko embeds a "topology map" within the `REMARK` lines of the PDBQT file, including:
 
@@ -437,14 +431,15 @@ mk_prepare_ligand.py -i mols.sdf --multimol_prefix mols_pdbqt
 
 The `--multimol_prefix` option directs the software to create a specific directory (in this case, mols_pdbqt) to store the individual PDBQT files for each ligand, ensuring an organized workspace for the subsequent docking simulation.
 
+
+In **Section 3**, we will describe a complete workflow for ligand preparation using [LigandHub](https://nanobiostructuresrg.github.io/LigandHub/), which provides a user-friendly interface for retrieving, curating, and preparing ligands for docking and virtual screening. 
+
+
 <br>
 
 ### 2.2.2 Preparing the Receptor Structure
 
 In **PyMOL**, open the downloaded **`5YCP.pdb`** file from PDB. In some cases, you can notice the file must include an incomplete protein structure, the co-crystallized ligand, and other heteroatoms such as ions and solvent. The goal is to produce one files with **only the receptor**. Furthermore, we will prepare another file with **the crystallized agonist**.
-
-
-![Raw structure as downloaded from the PDB 6MD4. In the figure below, the receptor is shown in blue, the ligand in green, and the co-crystallized components to be removed in red.](../figures/6MD4_raw.png){ width=70% }
 
 Select the relevant receptor chain (e.g., Chain **A**) and remove everything else. Save the result as **`5YCP_receptor.pdb`**. 
 
@@ -455,14 +450,18 @@ PyMOL > remove sele
 PyMOL > select HOH
 PyMOL > remove sele
 ```
+<br>
 
 Then isolate the ligand (**RGA**, **BRL**, etc) and save it as **`5YCP_ligand.pdb`**.
 
 If the receptor structure contains **unresolved residues or atoms** that could not be modeled from the experimental electron density, the missing region can be reconstructed by **comparative modeling** using the canonical protein sequence as reference. The first step is therefore to retrieve the canonical sequence from the [UniProt](https://www.uniprot.org/) database.
 
 
-For the present example, the relevant entry corresponds to human PPAR-γ **[P37231-2](https://www.uniprot.org/uniprotkb/P37231/entry)**, from which the canonical sequence is obtained for downstream modeling. 
+![Raw structure as downloaded from the PDB 6MD4. In the figure below, the receptor is shown in blue, the ligand in green, and the co-crystallized components to be removed in red.](../figures/6MD4_raw.png){ width=60% }
 
+<br>
+
+For the present example, the relevant entry corresponds to human PPAR-γ **[P37231-2](https://www.uniprot.org/uniprotkb/P37231/entry)**, from which the canonical sequence is obtained for downstream modeling. 
 
 The canonical sequence is used together with the experimentally resolved receptor fragment to generate the **PIR (`*.ali`) alignment file** required by **MODELLER**. In this tutorial, the alignment may be prepared either programmatically, as shown in **Notebook: Receptor Reconstruction**, or interactively using [UCSF ChimeraX](https://www.cgl.ucsf.edu/chimerax/), which allows the canonical sequence and the experimental receptor fragment to be opened, aligned, and exported in a format suitable for comparative modeling. In both cases, the purpose is to define the explicit residue correspondence between the template structure and the target sequence prior to model building.
 
@@ -486,7 +485,7 @@ The template–target correspondence required for comparative modeling is encode
 Because the PIR format follows a strict syntax, the file must preserve the appropriate entry headers, descriptor lines, gap placement, and sequence termination with `*`; sequence lines are conventionally written in fixed-width blocks, commonly **81 characters per line**.
 
 
-![Alignment between the raw structure and our modeled protein.](../figures/6MD4_model_alignment_0.128RMSD.png){ width=55% }
+![Alignment between the raw structure and our modeled protein.](../figures/6MD4_model_alignment_0.128RMSD.png){ width=45% }
 
 
 
@@ -545,7 +544,7 @@ Once the receptor model has been finalized, the next step is to identify structu
 Within the docking workflow, this information serves two related purposes. First, it supports the selection of the pocket to be targeted, particularly when multiple cavities are detected on the receptor surface. Second, it provides the spatial parameters required to define the docking search space, especially the coordinates used to position the center of the docking box. In practical terms, the most relevant information to retain from the cavity analysis includes the **pocket identifier**, the **centroid coordinates (x, y, z)**, the **residues lining the cavity**, and, when useful as additional context, the reported **volume** and **surface area**.
 
 
-![Main cavity calculated with Cavity Plus.](../figures/cavityplus_details.png){ width=95% }
+![Main cavity calculated with Cavity Plus.](../figures/cavityplus_details.png){ width=75% }
 
 
 Pocket selection should not rely exclusively on cavity ranking. Whenever structural, biochemical, or pharmacological evidence is available, the predicted cavity should be evaluated in the context of the known or expected **orthosteric binding region**, so that the defined docking box corresponds to a biologically relevant ligand-binding environment.
@@ -585,7 +584,7 @@ When multiple receptor conformations or receptor states are analyzed in parallel
 Now we will need to finish our setup before performing the docking. Here we need to get the structure of the receptor in .pdbqt, as well as defining a docking box and other docking parameters. We will prepare the .pdbqt of the receptor and the docking box in one step using Chimera. We will use the modeled PPAR $\gamma$ (PPARG_model.pdb) and the rosiglitazone from the crystal (6MD4_ligand.pdb). Both structures will be opened in Chimera, then we will go to the "Tools" tab, then to the "Surface/Binding Analysis" tab, and finally select "AutoDock Vina". This will open a dialog box where we will need to define the output location and name (PPARG.pdbqt), select the structure corresponding to the receptor, and the one corresponding to the ligand. 
 
 
-![Definition of the docking configuration in Chimera.](../figures/chimera_docking_box.png){ width=85% }
+![Definition of the docking configuration in Chimera.](../figures/chimera_docking_box.png){ width=70% }
 
 Then, in the center and size boxes is where the dimensions of the box will be defined, in cases where we have no idea where to begin we can start at center 0,0,0 and size 20,20,20. Then we will need to resize and define the box according to our needs; if we are interested in interactions with a particular region of the receptor (e.g. orthosteric site) then the box should encompass that region, in cases where we do not know where the ligands can interact then we can build a box that encompasses the whole receptor. 
 
@@ -597,6 +596,8 @@ Then, in the center and size boxes is where the dimensions of the box will be de
 After defining the right box, we will click OK. Here, Chimera will attempt to dock the selected ligand to the receptor, and preparing a .pdbqt file of both the ligand and receptor, and  also adds hydrogens. We will also see a .conf file that was generated, this will become the configuration for our docking, here we see our box dimensions and three more parameters. Exhaustiveness means how extensively the docking will be, the default if 8, but I like to use 100 for more precise calculations. Energy range is the maximum energy difference between the best pose and the rest of reported poses. Finally num of poses is how many poses will report, the default is 10, but they could be reduced. 
 
 So, now we have our two **`*.pdbqt`** structures for the receptor and ligand, and our **`*.conf`** file, and we are ready to perform our first docking. 
+
+![The terminal should show this docking log after running the docking command.](../figures/docking_log.png){ width=65% }
 
 
 <br>
@@ -612,9 +613,6 @@ If everything else went well, then this should be the easiest part. To perform t
 And _voilà_, there we have our docking. We can see on the terminal the docking binding energy in kcal/mol. 
 
 
-![The terminal should show this docking log after running the docking command.](../figures/docking_log.png){ width=85% }
-
-
 <br>
 
 ## 2.4 Analysis of Results
@@ -622,7 +620,7 @@ And _voilà_, there we have our docking. We can see on the terminal the docking 
 We can open in Pymol the used structure and the output _docked.pdbqt file to see its best docking pose. We can also create some pretty nice figures with Pymol to showcase where the preffered pose of the ligand was on blind docking. To get the egenral figure of the blind docking we can open our receptor's **`*.pdbqt`** file and all the _docked.pdbqt ligands in Pymol, we can also include the surface of the calculated cavity to showcase if the best docking poses fit within this orthosteric site. In the following figure we see the receptor in blue, the docked molecules in orange and the calculated binding site in yellow. 
 
 
-![Best poses after docking.](../figures/blind_docking_site.png){ width=60% }
+![Best poses after docking.](../figures/blind_docking_site.png){ width=50% }
 
 
 To get the aestethic of this figure, I first changed the background to white, then changed the ray trace mode with this command:
@@ -646,7 +644,9 @@ set transparency, 0.5
 If we want a more thorough analysis of the interactions we can save a **`*.pdb`** file with the receptor and the docked molecule, then open it in LigPlot+ to see the relevant residues and types of interactions. We will see the residues that interact with the molecule, with those red outlines indicating hydrophobic interactions, and the H-bonds will be indicated with green dashed lines.
 
 
-![LigPlot+ shows the interactions of the docked molecule.](../figures/18_docked.png){ width=60% }
+![LigPlot+ shows the interactions of the docked molecule.](../figures/18_docked.png){ width=50% }
+
+<br>
 
 > **Note:**  
 > Be careful when dealing with the numbering of the receptor, we should usually use the canonical numbering, but when making new models the numbering can change and it will affect when we report our results and the numbers do not match the ones reported in the reference article from the crystal structure.
@@ -660,7 +660,7 @@ set cartoon_transparency, 0.7
 Then we can show the distances between the ligand and the protein within a cutoff distance in Å. You can choose any value, but the larger the distance the more interactions there will be and the figure can look saturated. In this command objects 1 and 2 should correspond to the name of the structures that we want to showcase.
 
 
-![Closeup of the docked molecule showcasing its interactions with the relevant residues within 2.5 Å.](../figures/docking_closeup.png){ width=60% }
+![Closeup of the docked molecule showcasing its interactions with the relevant residues within 2.5 Angstroms.](../figures/docking_closeup.png){ width=60% }
 
 ```bash  
 distances polar, object_1, object_2, 2.5
@@ -682,6 +682,65 @@ This will label the selected interacting residues in their alpha carbons, and in
 
 We can also do repetitions of the same experiment, or get more docking poses to get a statistical analysis of the docking energies and poses. We can do the docking on other conformations of PPAR $\gamma$, and analyze the differences between the energies and interactions with those conformations. We can also weight these energies on another parameter to get the Ligand efficacy metric to make more practical sense of the results.
 
+<br>
+
+# PART 3: LigandHub
+
+[LigandHub](https://nanobiostructuresrg.github.io/LigandHub/) is a prototype web-based platform for ligand preparation and docking output recovery. It converts molecular structures in SDF, PDB, MOL2, or SMILES format into PDBQT files and can recover docked ligand coordinates from PDBQT or DLG results into SDF format. Ligands can be processed individually or in batch through the Batch Ligand Preparation section using SMILES libraries. The batch workflow returns a ZIP archive containing prepared PDBQT ligands and a summary file. Large libraries should be split into smaller files before upload. The current version (v0.1.0) applies conservative upload and library-size limits shown in the interface when available.
+The software utilizes RDKit (2025.9.2) for chemical perception and **Meeko** (0.7.1) for AutoDock-specific ligand preparation. 
+
+
+![LigandHub Interface](../figures/ligandhub.png){ width=70% }
+
+
+## 3.1 Architecture  
+
+**LigandHub** is implemented as a web-based backend service using FastAPI. The API exposes HTTP endpoints corresponding to the main platform workflows, including service monitoring, limit reporting, SMILES validation, ligand preparation, batch ligand processing, and docking-output recovery. Request inputs are provided through standard HTTP methods and form-data fields, and responses are returned as structured JSON metadata or downloadable molecular files depending on the workflow.
+
+The public API consists of six endpoints, namely:  
+
+- **GET /health** provides a minimal health-check response used to verify service availability. 
+- **GET /limits** reports active upload, batch-processing, and output-generation limits configured for the deployment. 
+- **POST /validate** accepts a SMILES string as form data and returns validation status, errors, warnings, and the submitted SMILES. 
+- **POST /prepare_ligand** accepts a single molecular input file and returns a prepared ligand in PDBQT format. 
+- **POST /prepare_ligand_batch** accepts a SMILES library and returns a ZIP archive containing generated PDBQT files and a structured summary. 
+- **POST /convert_pdbqt_to_sdf** accepts supported docking-output files and returns reconstructed docked conformations in SDF format.
+
+
+## 3.2 Functionalities
+
+**LigandHub** as an integrated platform for ligand preparation and docking-output recovery supports several input formats, validation procedures, molecular preprocessing, ligand preparation workflows, batch processing, and docking-output recovery. 
+
+### 3.2.1 Single-Ligand Input Formats
+
+**LigandHub** accepts single-ligand inputs as either SMILES-based text files or structure-based molecular files. SMILES-based inputs are supported through .smi, .smiles, and .txt formats, whereas structure-based inputs are supported in SDF, PDB, and MOL2 formats. These inputs provide the molecular representations used for validation, preprocessing, and ligand preparation.
+
+### 3.2.2 Batch Input Format
+
+Batch ligand preparation uses SMILES-based library files in .smi, .smiles, or .txt format. The input is interpreted as a line-based molecular library, where each valid record contains a SMILES string followed by a ligand identifier. The expected format consists of a whitespace-separated SMILES field and ligand identifier field on each record line. Empty lines and comment lines are ignored during parsing. Malformed records that do not contain both a SMILES string and a ligand identifier are treated as invalid entries. The parsed ligand identifier is used for output naming and result tracking, while the SMILES field defines the molecular structure processed in the batch workflow.
+
+### 3.2.3 SMILES Validation
+
+Molecular structures that can be parsed are subjected to RDKit sanitization, which evaluates the internal chemical consistency of the molecule and identifies structural issues that would compromise downstream processing. Sanitization failures are treated as validation errors, as they indicate that ligand preparation cannot proceed reliably. Valence-related failures are handled explicitly. When RDKit raises a valence exception, the affected atom index is extracted when available. The corresponding atom is then used to construct a structured error containing the atom index, element symbol, observed valence, and, when defined, a typical maximum valence for the element. This approach provides chemically interpretable feedback rather than a generic parsing error. If the atom index cannot be determined, the original exception is returned as a validation error.
+
+### 3.2.4 Molecular Preprocessing
+
+Molecular preprocessing is initiated after input reception and, when applicable, validation. LigandHub loads molecular structures using RDKit according to the submitted file format. Structure-based inputs are accepted as SDF, MOL2, or PDB files, whereas SMILES-based inputs are accepted as .smi, .smiles, or plain text files. For SMILES-based single-ligand inputs, the first non-empty line is read and the first whitespace-separated token is interpreted as the SMILES string.
+
+### 3.2.5 Hydrogen Addition and 3D Coordinate Generation
+
+Hydrogen addition is performed as part of preprocessing because explicit hydrogens are required for reliable downstream PDBQT generation. RDKit is used to add hydrogen atoms to the molecular representation, ensuring consistency for subsequent geometry handling and docking-oriented export. For SMILES and other two-dimensional inputs, three-dimensional coordinates are generated prior to ligand preparation. RDKit embedding is used to construct an initial 3D conformer when spatial coordinates are not available. For input formats that already contain three-dimensional coordinates, the submitted geometry is preserved rather than replaced, while still allowing hydrogen addition and optional geometry optimization. This approach avoids unnecessary modification of externally provided structures while ensuring that coordinate-free inputs become suitable for docking preparation.
+
+### 3.2.6 Energy Minimization
+
+Energy minimization is an optional preprocessing step controlled by user-defined parameters. When enabled, molecular geometry is optimized with RDKit following hydrogen addition and coordinate generation or loading. The maximum number of minimization iterations is configurable and constrained by service-level limits. MMFF94 is used as the primary force field when molecular parameters can be assigned. If MMFF94 parameters are unavailable, UFF is used as a fallback. If neither force-field can be applied, preprocessing proceeds with the current geometry rather than discarding the molecule. The resulting structure is then forwarded to the ligand preparation stage for PDBQT generation.
+
+## 3.3 Docking Outputs
+
+**LigandHub** supports recovery of docked ligand coordinates from AutoDock-compatible docking output files. Accepted input formats include PDBQT and DLG. PDBQT files typically represent docked ligand poses generated by AutoDock Vina and related workflows, whereas DLG files correspond to docking log outputs produced by AutoDock-family tools. In both cases, the input is treated as a docking-result file rather than as an unprepared ligand structure. The recovery workflow converts docked ligand conformations into SDF format for downstream analysis, visualization, or storage. The recovered structures correspond directly to the coordinates encoded in the docking output and are not newly generated conformations.
+
+
+<br>
 
 ---
 
